@@ -176,7 +176,7 @@ SELECT
     'https://youtube.com/watch?v=ejemplo1, https://youtube.com/watch?v=ejemplo2',
     false
 FROM public.user u
-WHERE u.username = 'augenia'
+WHERE u.username = 'eugenia'
 LIMIT 1
 ON CONFLICT DO NOTHING;
 

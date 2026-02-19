@@ -56,8 +56,12 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
+import { useRouter } from 'vue-router';
 import { supabase } from '@/utils/supabase';
+import { useAuth } from '@/composables/useAuth';
 
+const router = useRouter();
+const { saveSession } = useAuth();
 const logoPath = `${import.meta.env.BASE_URL}img/logo.png`;
 
 const formData = reactive({
@@ -89,7 +93,17 @@ const handleLogin = async () => {
     }
 
     if (data) {
-      successMessage.value = 'Sí existe';
+      // Guardar sesión (sin incluir la contraseña)
+      const userData = {
+        id: data.id,
+        username: data.username,
+        email: data.email,
+        nombre_completo: data.nombre_completo
+      };
+      saveSession(userData);
+      
+      // Redirigir a contratos
+      router.push('/contratos');
     } else {
       errorMessage.value = 'Usuario o contraseña incorrectos';
     }

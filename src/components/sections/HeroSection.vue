@@ -8,19 +8,13 @@
             Somos una empresa dedicada a la grabación de todo tipo de eventos: bodas, bautizos, cumpleaños, jaripeos, bailes y más. También realizamos producciones audiovisuales como videoclips, eventos en vivo y conciertos.
           </p>
         </div>
-        <a href="#contacto" class="btn btn-light mt-3" @click="scrollToContacto">Contratar ahora</a>
+        <router-link to="/contratar" class="btn btn-light mt-3">Contratar ahora</router-link>
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-const scrollToContacto = () => {
-  const element = document.getElementById('contacto');
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth' });
-  }
-};
 </script>
 
 <style scoped>
