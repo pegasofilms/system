@@ -11,16 +11,16 @@
       <div class="collapse navbar-collapse justify-content-end" :class="{ show: menuOpen }" id="navbarNav">
         <ul class="navbar-nav gap-2 gap-lg-3 ms-auto align-items-center">
           <li class="nav-item">
-            <a class="nav-link" href="#inicio" @click="scrollTo('inicio')">Inicio</a>
+            <a class="nav-link" href="#" @click.prevent="handleNavClick('inicio')">Inicio</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#servicios" @click="scrollTo('servicios')">Servicios</a>
+            <a class="nav-link" href="#" @click.prevent="handleNavClick('servicios')">Servicios</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#videos" @click="scrollTo('videos')">Videos</a>
+            <a class="nav-link" href="#" @click.prevent="handleNavClick('videos')">Videos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#contacto" @click="scrollTo('contacto')">Contacto</a>
+            <a class="nav-link" href="#" @click.prevent="handleNavClick('contacto')">Contacto</a>
           </li>
           <!-- <li class="nav-item">
             <router-link to="/posts" class="nav-link">Ejemplos API</router-link>
@@ -52,11 +52,27 @@ const goToHome = () => {
   }
 };
 
-const scrollTo = (id: string) => {
+const handleNavClick = (id: string) => {
   menuOpen.value = false;
+  
+  // Si no estamos en la página de inicio, navegar primero
+  if (router.currentRoute.value.path !== '/') {
+    router.push('/').then(() => {
+      // Esperar un momento para que la página se renderice
+      setTimeout(() => {
+        scrollToSection(id);
+      }, 100);
+    });
+  } else {
+    // Si ya estamos en la página de inicio, hacer scroll directamente
+    scrollToSection(id);
+  }
+};
+
+const scrollToSection = (id: string) => {
   const element = document.getElementById(id);
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth' });
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 };
 </script>
