@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light py-3 bg-white navbar-pegaso">
     <div class="container d-flex justify-content-between align-items-center">
-      <router-link class="navbar-brand d-flex align-items-center" to="/">
+      <router-link class="navbar-brand d-flex align-items-center" to="/" @click="goToHome">
         <img :src="logoPath" alt="PEGASO FILMS" width="40" height="40" class="d-inline-block align-text-top me-2">
         <strong>PEGASO FILMS</strong>
       </router-link>
@@ -33,12 +33,23 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const menuOpen = ref(false);
 const logoPath = `${import.meta.env.BASE_URL}img/logo.png`;
 
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
+};
+
+const goToHome = () => {
+  menuOpen.value = false;
+  if (router.currentRoute.value.path !== '/') {
+    router.push('/');
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 };
 
 const scrollTo = (id: string) => {
