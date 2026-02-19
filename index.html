@@ -3,43 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pegaso Films</title>
+    <meta name="description" content="PEGASO FILMS NOPALA — Grabación de bodas, bautizos, cumpleaños, jaripeos, videoclips y eventos en vivo. Contrataciones: 954 182 9852">
+    <title>PEGASO FILMS NOPALA</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        .navbar-pegaso .navbar-brand,
+        .navbar-pegaso .navbar-brand strong,
+        .navbar-pegaso .nav-link { color: rgb(0, 36, 102) !important; font-weight: bold; }
+        .card {
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #eee;
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15) !important;
         }
-        .container {
-            text-align: center;
-            padding: 2rem;
-        }
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-        p {
-            opacity: 0.9;
-            font-size: 1.1rem;
+        .ratio.ratio-1x1 img {
+            object-fit: cover;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Pegaso Films</h1>
-        <p>Bienvenido</p>
-    </div>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light py-3 bg-white navbar-pegaso">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand d-flex align-items-center" href="#inicio">
+                <img src="img/logo.png" alt="PEGASO FILMS" width="40" height="40" class="d-inline-block align-text-top me-2">
+                <strong>PEGASO FILMS</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir menú">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav gap-2 gap-lg-3 ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#videos">Videos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Inicio: Hero + Quiénes somos -->
+    <section id="inicio">
+        <div class="text-white py-5 text-center" style="background: linear-gradient(0deg, #01153a 0%, #1b294d 0%, #224a9d 100%);">
+            <div class="container">
+                <p class="h4 fw-bold mb-3">¿Quiénes somos?</p>
+                <div class="row justify-content-center text-center">
+                    <p class="col-12 col-md-8">
+                        Somos una empresa dedicada a la grabación de todo tipo de eventos: bodas, bautizos, cumpleaños, jaripeos, bailes y más. También realizamos producciones audiovisuales como videoclips, eventos en vivo y conciertos.
+                    </p>
+                </div>
+                <a href="#contacto" class="btn btn-light">Contratar ahora</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Servicios -->
+    <section id="servicios" class="py-5 bg-white">
+        <div class="container">
+            <h2 class="h2 fw-bold text-center mb-3">Nuestros servicios</h2>
+            <p class="text-muted text-center mb-4">Grabación y transmisión en vivo de todo tipo de eventos</p>
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <img src="img/boda.jpg" alt="Boda" class="mb-2 rounded">
+                        <h3 class="h6 fw-bold mb-1">Bodas</h3>
+                        <p class="small text-muted mb-0">Grabación y edición de tu boda para que revivas cada momento.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <img src="img/bautizo.jpg" alt="Bautizo" class="mb-2 rounded">
+                        <h3 class="h6 fw-bold mb-1">Bautizos</h3>
+                        <p class="small text-muted mb-0">Capturamos la ceremonia y la celebración de este día especial.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <img src="img/cumpleanos.jpg" alt="Cumpleaños" class="mb-2 rounded">
+                        <h3 class="h6 fw-bold mb-1">Cumpleaños</h3>
+                        <p class="small text-muted mb-0">Fiestas infantiles y de adultos con recuerdos en video.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <img src="img/jaripeo.jpg" alt="Jaripeo" class="mb-2 rounded">
+                        <h3 class="h6 fw-bold mb-1">Jaripeos</h3>
+                        <p class="small text-muted mb-0">Cobertura de jaripeos y eventos charros en vivo.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <img src="img/baile.jpg" alt="Bailes" class="mb-2 rounded">
+                        <h3 class="h6 fw-bold mb-1">Bailes</h3>
+                        <p class="small text-muted mb-0">Grabación de bailes, quinceañeras y fiestas.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <img src="img/videoclips.jpg" alt="Videoclips" class="mb-2 rounded">
+                        <h3 class="h6 fw-bold mb-1">Videoclips</h3>
+                        <p class="small text-muted mb-0">Producción audiovisual profesional para música y artistas.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <img src="img/envivo.jpg" alt="Eventos en vivo" class="mb-2 rounded">
+                        <h3 class="h6 fw-bold mb-1">Eventos en vivo</h3>
+                        <p class="small text-muted mb-0">Transmisión y grabación de eventos en tiempo real.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <img src="img/conciertos.jpg" alt="Conciertos" class="mb-2 rounded">
+                        <h3 class="h6 fw-bold mb-1">Conciertos</h3>
+                        <p class="small text-muted mb-0">Cobertura de conciertos y presentaciones musicales.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <img src="img/xvanos.jpg" alt="Xv años" class="mb-2 rounded">
+                        <h3 class="h6 fw-bold mb-1">Xv años</h3>
+                        <p class="small text-muted mb-0">Grabación y edición de fiestas de XV años.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <img src="img/eventocultural.jpg" alt="Eventos culturales" class="mb-2 rounded">
+                        <h3 class="h6 fw-bold mb-1">Eventos culturales</h3>
+                        <p class="small text-muted mb-0">Cobertura de eventos culturales y transmisión en vivo.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <img src="img/clausura.jpg" alt="Clausuras" class="mb-2 rounded">
+                        <h3 class="h6 fw-bold mb-1">Clausuras</h3>
+                        <p class="small text-muted mb-0">Grabación y edición de clausuras escolares</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <img src="img/calendaconvite.jpg" alt="Calenda y convite" class="mb-2 rounded">
+                        <h3 class="h6 fw-bold mb-1">Calendas y convites</h3>
+                        <p class="small text-muted mb-0">Grabación y edición de calendas y convites.</p>
+                    </div>
+                </div>
+            </div>
+            <h3 class="h5 fw-bold text-center mt-5 mb-3">Producción audiovisual</h3>
+            <p class="text-muted text-center mb-3">Videoclips, spots, anuncios y videos comerciales en nuestras plataformas</p>
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <i class="fa-solid fa-film text-primary mb-2" style="font-size: 1.5rem;"></i>
+                        <h3 class="h6 fw-bold mb-1">Videoclips</h3>
+                        <p class="small text-muted mb-0">Producción de videoclips musicales.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <i class="fa-solid fa-bullhorn text-primary mb-2" style="font-size: 1.5rem;"></i>
+                        <h3 class="h6 fw-bold mb-1">Spots y anuncios</h3>
+                        <p class="small text-muted mb-0">Spots publicitarios y anuncios.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <i class="fa-solid fa-tv text-primary mb-2" style="font-size: 1.5rem;"></i>
+                        <h3 class="h6 fw-bold mb-1">Anuncios en nuestras plataformas</h3>
+                        <p class="small text-muted mb-0">Difusión de anuncios publicitarios en YouTube y redes.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <i class="fa-solid fa-briefcase text-primary mb-2" style="font-size: 1.5rem;"></i>
+                        <h3 class="h6 fw-bold mb-1">Videos comerciales</h3>
+                        <p class="small text-muted mb-0">Videos comerciales para empresas y marcas.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <i class="fa-solid fa-image text-primary mb-2" style="font-size: 1.5rem;"></i>
+                        <h3 class="h6 fw-bold mb-1">Flayers</h3>
+                        <p class="small text-muted mb-0">Diseño de flayers para eventos y promociones.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <i class="fa-solid fa-upload text-primary mb-2" style="font-size: 1.5rem;"></i>
+                        <h3 class="h6 fw-bold mb-1">Subida de vieos a plataformas</h3>
+                        <p class="small text-muted mb-0">Subida de videos a plataformas como YouTube, Facebook, Instagram, etc.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <i class="fa-solid fa-palette text-primary mb-2" style="font-size: 1.5rem;"></i>
+                        <h3 class="h6 fw-bold mb-1">Diseño de logos</h3>
+                        <p class="small text-muted mb-0">Diseño de logos para clientes y empresas.</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 text-center p-3">
+                        <i class="fa-solid fa-screwdriver-wrench text-primary mb-2" style="font-size: 1.5rem;"></i>
+                        <h3 class="h6 fw-bold mb-1">Asistencia técnica</h3>
+                        <p class="small text-muted mb-0">Asistencia técnica para eventos y empresas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cómo trabajamos: transmisiones rurales, Starlink, paquetes -->
+    <section class="py-3 bg-white">
+        <div class="container">
+            <h2 class="h2 fw-bold text-center mb-4">Cómo trabajamos</h2>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-10 col-lg-8">
+                    <p class="mb-3 text-center">
+                        <i class="fa-solid fa-satellite-dish text-primary" style="font-size: 2.5rem;" aria-hidden="true"></i>
+  
+                        <i class="fa-solid fa-video text-primary" style="font-size: 2.5rem;" aria-hidden="true"></i>
+                    </p>
+                    <p class="text-muted mb-3">
+                        Trabajamos con <strong class="text-dark">equipos profesionales</strong>, ofreciendo calidad <strong class="text-dark">HD a 60 fps</strong> tanto en transmisiones como en filmaciones. Realizamos <strong class="text-dark">transmisiones en vivo en zonas rurales</strong> usando equipo satelital <strong class="text-dark">Starlink</strong>, para que tu evento llegue a quien quieras. Nos <strong class="text-dark">adaptamos al paquete que el cliente necesite</strong>: podemos hacer <strong>solo transmisión en vivo</strong>, <strong>solo grabación</strong>, o <strong>ambos</strong>.
+                    </p>
+                    <p class="text-muted mb-0 small">
+                        <strong class="text-dark">Entregas:</strong>
+                        <ul class="mb-0 small ps-3 text-start d-inline-block" style="list-style-type: disc;">
+                            <li>Enlace de YouTube (video privado o público)</li>
+                            <li>Memoria USB</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Videos: pega el ID de tus videos (de la URL de YouTube watch?v=XXXXXXXX) en los dos iframes -->
+    <section id="videos" class="py-3 bg-white">
+        <div class="container">
+            <h2 class="h2 fw-bold text-center mb-3">Nuestros trabajos</h2>
+            <p class="text-muted text-center mb-4">Algunos de nuestros videos · Ver más en nuestro canal</p>
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="ratio ratio-16x9">
+                        <!-- Reemplaza VIDEO_ID_1 con el ID de un video de tu canal (ej. youtube.com/watch?v=VIDEO_ID_1) -->
+                        <iframe src="https://www.youtube.com/embed/YReAfZvZn6g?si=XFo41FXi1_VoWcwH" title="PEGASO FILMS" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="ratio ratio-16x9">
+                        <!-- Reemplaza VIDEO_ID_2 con el ID de otro video de tu canal -->
+                        <iframe src="https://www.youtube.com/embed/jhR8BB7bjaY?si=KtpbnH_a84h9VLDW" title="PEGASO FILMS" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="https://www.youtube.com/@PEGASOFILMSNOPALA" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger"><i class="fa-brands fa-youtube me-2"></i>Ver canal en YouTube</a>
+                <a href="https://www.youtube.com/@PEGASOFILMSLIVE" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger"><i class="fa-solid fa-tower-broadcast me-2"></i>Ver transmisiones en vivo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Redes sociales -->
+    <section class="py-4 bg-white">
+        <div class="container text-center">
+            <h2 class="h2 fw-bold mb-3">Síguenos</h2>
+            <p class="text-muted mb-4">@PEGASOFILMSNOPALA</p>
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+                <a class="btn btn-outline-danger" href="https://www.youtube.com/c/PEGASOFILMSNOPALA" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-brands fa-youtube me-1"></i> YouTube
+                </a>
+                <a class="btn btn-outline-danger" href="https://www.youtube.com/@PEGASOFILMSLIVE" target="_blank" rel="noopener noreferrer" >
+                    <i class="fa-solid fa-tower-broadcast me-1"></i> Live
+                </a>
+                <a class="btn btn-outline-primary" href="https://www.facebook.com/pegasofilmsnopala" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-brands fa-facebook me-1"></i> Facebook
+                </a>
+                <a class="btn btn-outline-dark" href="https://www.tiktok.com/@pegasofilms" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-brands fa-tiktok me-1"></i> TikTok
+                </a>
+                <a class="btn btn-outline-danger" href="https://www.instagram.com/pegasofilmsnopala" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-brands fa-instagram me-1"></i> Instagram
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto + Footer (bloque unificado) -->
+    <footer id="contacto" class="bg-dark text-white">
+        <div class="container py-4">
+            <div class="justify-content-center">
+                <div class=" text-center">
+                    <h2 class="h4 fw-bold mb-1 text-white">Contrataciones</h2>
+                    <p class="text-white-50 mb-3 small">Reserva tu fecha o solicita información. Te respondemos por teléfono o WhatsApp.</p>
+                    <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-2">
+                        <a href="tel:+529541829852" class="btn btn-outline-light btn px-4 rounded-pill">
+                            <i class="fa-solid fa-phone me-2" aria-hidden="true"></i> 954 182 9852
+                        </a>
+                        <a href="https://wa.me/529541829852?text=Hola%2C%20estoy%20interesado%20en%20contratar%20alguna%20grabaci%C3%B3n." target="_blank" rel="noopener noreferrer" class="btn btn-success px-4 rounded-pill">
+                            <i class="fa-brands fa-whatsapp me-2" aria-hidden="true"></i> Escribir por WhatsApp
+                        </a>
+                    </div>
+                    <hr class="border-secondary my-3 opacity-50">
+                    <p class="small text-white-50 mb-0">
+                        <img src="img/logo.png" alt="" width="40" height="40" class="align-middle me-2" aria-hidden="true">
+                        <span class="fw-semibold text-white">PEGASO FILMS</span> · Gracias por la preferencia.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
