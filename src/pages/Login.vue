@@ -14,28 +14,14 @@
               <form @submit.prevent="handleLogin">
                 <div class="mb-3">
                   <label for="email" class="form-label fw-semibold">Email o Usuario</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="email"
-                    v-model="formData.email"
-                    placeholder="tu@email.com"
-                    required
-                    autocomplete="username"
-                  />
+                  <input type="text" class="form-control" id="email" v-model="formData.email" placeholder="tu@email.com"
+                    required autocomplete="username" />
                 </div>
 
                 <div class="mb-4">
                   <label for="password" class="form-label fw-semibold">Contraseña</label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    id="password"
-                    v-model="formData.password"
-                    placeholder="••••••••"
-                    required
-                    autocomplete="current-password"
-                  />
+                  <input type="password" class="form-control" id="password" v-model="formData.password"
+                    placeholder="••••••••" required autocomplete="current-password" />
                 </div>
 
                 <div v-if="errorMessage" class="alert alert-danger" role="alert">
@@ -46,17 +32,14 @@
                   {{ successMessage }}
                 </div>
 
-                <button
-                  type="submit"
-                  class="btn btn-primary w-100 py-2 fw-semibold mb-3"
-                  :disabled="loading"
-                >
-                  <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold mb-3" :disabled="loading">
+                  <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status"
+                    aria-hidden="true"></span>
                   <span v-if="!loading">Iniciar Sesión</span>
                   <span v-else>Iniciando sesión...</span>
                 </button>
               </form>
-              
+
               <div class="text-center mt-3">
                 <router-link to="/" class="text-decoration-none text-muted small">
                   <i class="fa-solid fa-arrow-left me-1"></i>
@@ -73,6 +56,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
+import { supabase } from '@/utils/supabase';
 
 const logoPath = `${import.meta.env.BASE_URL}img/logo.png`;
 
@@ -92,31 +76,25 @@ const handleLogin = async () => {
   loading.value = true;
 
   try {
-    // Aquí irá la petición HTTP
-    // Por ahora solo simulamos una petición
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: formData.email,
-        password: formData.password
-      })
-    });
+    const { data, error: supabaseError } = await supabase
+      .from('user')
+      .select('id, username, password, email, nombre_completo')
+      .eq('username', formData.email)
+      .eq('password', formData.password)
+      .maybeSingle();
 
-    const data = await response.json();
-
-    if (response.ok) {
-      successMessage.value = 'Inicio de sesión exitoso';
-      // Aquí puedes redirigir o manejar la respuesta exitosa
-      console.log('Login exitoso:', data);
-    } else {
-      errorMessage.value = data.message || 'Error al iniciar sesión';
+    if (supabaseError) {
+      errorMessage.value = supabaseError.message || 'Error al iniciar sesión';
+      return;
     }
-  } catch (error) {
+
+    if (data) {
+      successMessage.value = 'Sí existe';
+    } else {
+      errorMessage.value = 'Usuario o contraseña incorrectos';
+    }
+  } catch (error: any) {
     errorMessage.value = 'Error de conexión. Por favor, intenta nuevamente.';
-    console.error('Error en login:', error);
   } finally {
     loading.value = false;
   }
