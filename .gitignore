@@ -20,6 +20,9 @@ npm-debug.log*
 .env
 .env.local
 
+# TypeScript
+*.tsbuildinfo
+
 # Dependencies
 node_modules/
 dist/
@@ -41,3 +44,6 @@ npm-debug.log*
 # Environment
 .env
 .env.local
+
+# TypeScript
+*.tsbuildinfo
