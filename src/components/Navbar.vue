@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -52,27 +52,44 @@ const goToHome = () => {
   }
 };
 
-const handleNavClick = (id: string) => {
+const handleNavClick = async (id: string) => {
   menuOpen.value = false;
   
   // Si no estamos en la página de inicio, navegar primero
   if (router.currentRoute.value.path !== '/') {
-    router.push('/').then(() => {
-      // Esperar un momento para que la página se renderice
-      setTimeout(() => {
-        scrollToSection(id);
-      }, 100);
-    });
+    await router.push('/');
+    // Esperar a que Vue renderice los componentes
+    await nextTick();
+    // Dar tiempo adicional para que los componentes se monten completamente
+    await new Promise(resolve => setTimeout(resolve, 200));
+    scrollToSection(id);
   } else {
-    // Si ya estamos en la página de inicio, hacer scroll directamente
+    // Si ya estamos en la página de inicio, esperar a que el DOM esté listo
+    await nextTick();
     scrollToSection(id);
   }
 };
 
-const scrollToSection = (id: string) => {
+const scrollToSection = (id: string, retries = 5) => {
   const element = document.getElementById(id);
+  
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Calcular el offset del navbar (altura aproximada del navbar)
+    const navbarHeight = 80; // Ajusta según la altura real de tu navbar
+    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+    const offsetPosition = elementPosition - navbarHeight;
+    
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  } else if (retries > 0) {
+    // Si el elemento no existe, reintentar después de un breve delay
+    setTimeout(() => {
+      scrollToSection(id, retries - 1);
+    }, 100);
+  } else {
+    console.warn(`No se pudo encontrar el elemento con id: ${id}`);
   }
 };
 </script>
