@@ -48,7 +48,7 @@
 
                 <button
                   type="submit"
-                  class="btn btn-primary w-100 py-2 fw-semibold"
+                  class="btn btn-primary w-100 py-2 fw-semibold mb-3"
                   :disabled="loading"
                 >
                   <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
@@ -56,6 +56,13 @@
                   <span v-else>Iniciando sesión...</span>
                 </button>
               </form>
+              
+              <div class="text-center mt-3">
+                <router-link to="/" class="text-decoration-none text-muted small">
+                  <i class="fa-solid fa-arrow-left me-1"></i>
+                  Regresar a la página principal
+                </router-link>
+              </div>
             </div>
           </div>
         </div>
