@@ -1,5 +1,5 @@
 <template>
-  <section class="py-3 bg-white">
+  <section id="como-trabajamos" class="py-3 bg-white">
     <div class="container">
       <h2 class="h2 fw-bold text-center mb-4">Cómo trabajamos</h2>
       <div class="row g-4 justify-content-center">

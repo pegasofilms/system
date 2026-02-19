@@ -5,7 +5,7 @@
     <ComoTrabajamosSection />
     <VideosSection />
     <RedesSocialesSection />
-    <EjemplosApiSection />
+    <!-- <EjemplosApiSection /> -->
     <ContactoFooter />
   </div>
 </template>
@@ -16,7 +16,7 @@ import ServiciosSection from '@/components/sections/ServiciosSection.vue';
 import ComoTrabajamosSection from '@/components/sections/ComoTrabajamosSection.vue';
 import VideosSection from '@/components/sections/VideosSection.vue';
 import RedesSocialesSection from '@/components/sections/RedesSocialesSection.vue';
-import EjemplosApiSection from '@/components/sections/EjemplosApiSection.vue';
+// import EjemplosApiSection from '@/components/sections/EjemplosApiSection.vue';
 import ContactoFooter from '@/components/sections/ContactoFooter.vue';
 </script>
 

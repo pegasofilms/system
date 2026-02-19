@@ -17,10 +17,16 @@
             <a class="nav-link" href="#" @click.prevent="handleNavClick('servicios')">Servicios</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="#" @click.prevent="handleNavClick('como-trabajamos')">Como trabajamos</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="#" @click.prevent="handleNavClick('videos')">Videos</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#" @click.prevent="handleNavClick('contacto')">Contacto</a>
+          </li>
+          <li class="nav-item">
+            <router-link to="/login" class="nav-link">Login</router-link>
           </li>
           <!-- <li class="nav-item">
             <router-link to="/posts" class="nav-link">Ejemplos API</router-link>
