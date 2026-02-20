@@ -88,3 +88,43 @@ export function getWhatsAppCotizacionUrl(datos: {
   msg += `\n_Quisiera confirmar precio real. Este total es solo una estimación._`;
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 }
+
+/**
+ * Formatea teléfono para wa.me: solo dígitos, código país México 52 si falta.
+ */
+function formatPhoneForWhatsApp(telefono: string): string {
+  const digits = (telefono || '').replace(/\D/g, '');
+  if (digits.length === 10) return '52' + digits;
+  if (digits.length === 12 && digits.startsWith('52')) return digits;
+  return digits || '';
+}
+
+/**
+ * Genera el enlace de WhatsApp para enviar al CLIENTE la entrega de videos.
+ * Abre wa.me con el número del cliente y mensaje de agradecimiento + enlaces.
+ */
+export function getWhatsAppEntregaVideosUrl(contrato: {
+  contratante?: string | null;
+  telefono?: string | null;
+  tipo_evento?: string;
+  enlaces_videos?: string | null;
+}): string | null {
+  const telefono = formatPhoneForWhatsApp(contrato.telefono || '');
+  if (!telefono) return null;
+
+  const enlaces = (contrato.enlaces_videos || '')
+    .split(/[,\s]+/)
+    .filter((u: string) => u.trim());
+
+  let msg = `*PEGASO FILMS* 🎬\n\n`;
+  msg += `Hola${contrato.contratante ? ` ${contrato.contratante.trim().split(/\s+/)[0]}` : ''},\n\n`;
+  msg += `Gracias por confiar en nosotros para *${contrato.tipo_evento || 'tu evento'}*.\n\n`;
+  msg += `Te compartimos los enlaces de tus videos:\n\n`;
+  enlaces.forEach((url, i) => {
+    msg += `${i + 1}. ${url.trim()}\n`;
+  });
+  msg += `\n_Es un gusto haber compartido este momento contigo._\n`;
+  msg += `— Pegaso Films`;
+
+  return `https://wa.me/${telefono}?text=${encodeURIComponent(msg)}`;
+}

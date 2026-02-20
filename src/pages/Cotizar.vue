@@ -33,18 +33,7 @@
                   <label for="tipo_evento" class="form-label fw-semibold">Tipo de Evento <span class="text-danger">*</span></label>
                   <select class="form-select" id="tipo_evento" v-model="formData.tipo_evento" required>
                     <option value="">Selecciona un tipo</option>
-                    <option value="Boda">Boda</option>
-                    <option value="Bautizo">Bautizo</option>
-                    <option value="Cumpleaños">Cumpleaños</option>
-                    <option value="XV Años">XV Años</option>
-                    <option value="Clausura">Clausura</option>
-                    <option value="Calenda y convite">Calenda y convite</option>
-                    <option value="Jaripeo">Jaripeo</option>
-                    <option value="Baile">Baile</option>
-                    <option value="Concierto">Concierto</option>
-                    <option value="Videoclip">Videoclip</option>
-                    <option value="Videos comerciales">Videos comerciales</option>
-                    <option value="Otro">Otro</option>
+                    <option v-for="t in TIPOS_EVENTO" :key="t" :value="t">{{ t }}</option>
                   </select>
                 </div>
 
@@ -145,6 +134,7 @@
 import { ref, reactive, onMounted } from 'vue';
 import Swal from 'sweetalert2';
 import { getMunicipiosOaxaca } from '@/data/municipiosOaxaca';
+import { TIPOS_EVENTO } from '@/data/tiposEvento';
 import { getWhatsAppCotizacionUrl } from '@/utils/whatsappService';
 
 const logoPath = `${import.meta.env.BASE_URL}img/logo.png`;

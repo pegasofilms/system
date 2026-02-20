@@ -110,20 +110,20 @@ FOR INSERT
 TO anon, authenticated
 WITH CHECK (true);
 
--- Permitir actualización de contratos propios
+-- Permitir actualización de contratos (anon + authenticated para que la app con clave anon pueda actualizar)
 CREATE POLICY "Permitir actualización de contratos propios"
 ON public.contratos
 FOR UPDATE
-TO authenticated
-USING (true) -- Ajusta esto según tus necesidades
+TO anon, authenticated
+USING (true)
 WITH CHECK (true);
 
--- Permitir eliminación de contratos propios
+-- Permitir eliminación de contratos (anon + authenticated para que la app con clave anon pueda eliminar)
 CREATE POLICY "Permitir eliminación de contratos propios"
 ON public.contratos
 FOR DELETE
-TO authenticated
-USING (true); -- Ajusta esto según tus necesidades
+TO anon, authenticated
+USING (true);
 
 -- ============================================
 -- DATOS DE EJEMPLO (OPCIONAL)
