@@ -1,5 +1,5 @@
 <template>
-  <section id="videos" class="py-3 bg-white">
+  <section id="videos" class="py-2 bg-white">
     <div class="container">
       <h2 class="h2 fw-bold text-center mb-3">Nuestros trabajos</h2>
       <p class="text-muted text-center mb-4">Algunos de nuestros videos · Ver más en nuestro canal</p>
@@ -11,10 +11,10 @@
         </div>
       </div>
       <div class="text-center">
-        <a href="https://www.youtube.com/@PEGASOFILMSNOPALA" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger me-2">
+        <a href="https://www.youtube.com/@PEGASOFILMSNOPALA" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger me-2 mb-2">
           <i class="fa-brands fa-youtube me-2"></i>Ver canal en YouTube
         </a>
-        <a href="https://www.youtube.com/@PEGASOFILMSLIVE" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger">
+        <a href="https://www.youtube.com/@PEGASOFILMSLIVE" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger mb-2">
           <i class="fa-solid fa-tower-broadcast me-2"></i>Ver transmisiones en vivo
         </a>
       </div>
