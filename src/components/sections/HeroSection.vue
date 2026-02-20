@@ -8,7 +8,7 @@
             Somos una empresa dedicada a la grabación de todo tipo de eventos: bodas, bautizos, cumpleaños, jaripeos, bailes y más. También realizamos producciones audiovisuales como videoclips, eventos en vivo y conciertos.
           </p>
         </div>
-        <router-link to="/contratar" class="btn btn-light mt-3">Contratar ahora</router-link>
+        <router-link to="/cotizar" class="btn btn-light mt-3">Cotizar ahora</router-link>
       </div>
     </div>
   </section>

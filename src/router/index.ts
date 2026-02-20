@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import Home from '@/pages/Home.vue';
 import Login from '@/pages/Login.vue';
 import Contratos from '@/pages/Contratos.vue';
-import Contratar from '@/pages/Contratar.vue';
+import Cotizar from '@/pages/Cotizar.vue';
 import { useAuth } from '@/composables/useAuth';
 
 const routes = [
@@ -24,9 +24,9 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/contratar',
-    name: 'Contratar',
-    component: Contratar
+    path: '/cotizar',
+    name: 'Cotizar',
+    component: Cotizar
   }
 ];
 
