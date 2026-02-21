@@ -1,3 +1,15 @@
+/** Un padrino/madrina: de qué (ej. anillos, lazo) y nombre */
+export interface PadrinoEntry {
+  deQue: string;
+  nombre: string;
+}
+
+/** Un video: nombre (ej. intro, comida, baile) y URL */
+export interface VideoEntry {
+  nombre: string;
+  url: string;
+}
+
 /** Contrato tal como viene de Supabase */
 export interface Contrato {
   id: number;

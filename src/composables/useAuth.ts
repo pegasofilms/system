@@ -5,6 +5,7 @@ interface User {
   username: string;
   email: string | null;
   nombre_completo: string | null;
+  telefono?: string | null;
 }
 
 const SESSION_KEY = 'pegaso_films_session';

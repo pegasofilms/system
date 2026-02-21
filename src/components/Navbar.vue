@@ -2,8 +2,8 @@
   <nav class="navbar navbar-expand-lg navbar-light py-3 bg-white navbar-pegaso">
     <div class="container d-flex justify-content-between align-items-center">
       <router-link class="navbar-brand d-flex align-items-center" to="/" @click="goToHome">
-        <img :src="logoPath" alt="PEGASO FILMS" width="40" height="40" class="d-inline-block align-text-top me-2">
-        <strong>PEGASO FILMS</strong>
+        <img :src="logoPath" :alt="EMPRESA.nombre" width="40" height="40" class="d-inline-block align-text-top me-2">
+        <strong>{{ EMPRESA.nombre }}</strong>
       </router-link>
       <button class="navbar-toggler" type="button" @click="toggleMenu" aria-label="Abrir menú">
         <span class="navbar-toggler-icon"></span>
@@ -40,6 +40,7 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
+import { EMPRESA } from '@/data/empresa';
 
 const router = useRouter();
 const menuOpen = ref(false);

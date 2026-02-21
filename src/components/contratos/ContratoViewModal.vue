@@ -11,7 +11,7 @@
               </h5>
               <p class="mb-0 small opacity-90 mt-1">
                 {{ contrato ? formatDate(contrato.fecha_evento) : '' }}
-                <span v-if="contrato?.lugar" class="ms-2">· {{ contrato.lugar }}</span>
+                <span v-if="displayContrato?.lugar && displayContrato.lugar !== '—'" class="ms-2">· {{ displayContrato.lugar }}</span>
               </p>
             </div>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar" @click="cerrar"></button>
@@ -19,7 +19,7 @@
         </div>
         <div v-if="contrato" class="modal-body">
           <div class="contrato-view-badge mb-3">
-            <span :class="getEstadoBadgeClass(contrato.estado)">{{ formatEstado(contrato.estado) }}</span>
+            <span :class="getEstadoBadgeClass(contrato.estado)">{{ displayContrato.estado }}</span>
           </div>
 
           <section class="contrato-view-section">
@@ -28,7 +28,7 @@
               <div class="col-sm-6">
                 <div class="contrato-view-field">
                   <span class="contrato-view-label">Tipo</span>
-                  <span class="contrato-view-value">{{ contrato.tipo_evento }}</span>
+                  <span class="contrato-view-value">{{ displayContrato.tipo_evento }}</span>
                 </div>
               </div>
               <div class="col-sm-6">
@@ -40,7 +40,7 @@
               <div class="col-12">
                 <div class="contrato-view-field">
                   <span class="contrato-view-label">Lugar</span>
-                  <span class="contrato-view-value">{{ contrato.lugar || '—' }}</span>
+                  <span class="contrato-view-value">{{ displayContrato.lugar }}</span>
                 </div>
               </div>
             </div>
@@ -52,19 +52,33 @@
               <div class="col-sm-6">
                 <div class="contrato-view-field">
                   <span class="contrato-view-label">Contratante</span>
-                  <span class="contrato-view-value">{{ contrato.contratante || '—' }}</span>
+                  <span class="contrato-view-value">{{ displayContrato.contratante }}</span>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="contrato-view-field">
                   <span class="contrato-view-label">Teléfono</span>
-                  <span class="contrato-view-value">{{ contrato.telefono || '—' }}</span>
+                  <span class="contrato-view-value">{{ displayContrato.telefono }}</span>
                 </div>
               </div>
-              <div class="col-12" v-if="contrato.padrinos || contrato.padres || contrato.festejado">
+              <div class="col-12" v-if="contrato.festejado">
                 <div class="contrato-view-field">
-                  <span class="contrato-view-label">Padrinos / Padres / Festejado</span>
-                  <span class="contrato-view-value">{{ [contrato.padrinos, contrato.padres, contrato.festejado].filter(Boolean).join(' · ') || '—' }}</span>
+                  <span class="contrato-view-label">Festejado</span>
+                  <span class="contrato-view-value">{{ displayContrato.festejado }}</span>
+                </div>
+              </div>
+              <div class="col-12" v-if="contrato.padres">
+                <div class="contrato-view-field">
+                  <span class="contrato-view-label">Padres</span>
+                  <span class="contrato-view-value">{{ displayContrato.padres }}</span>
+                </div>
+              </div>
+              <div class="col-12" v-if="padrinosDisplayList.length">
+                <div class="contrato-view-field">
+                  <span class="contrato-view-label">Padrinos</span>
+                  <ul class="contrato-view-padrinos-list mb-0 ps-3">
+                    <li v-for="(linea, i) in padrinosDisplayList" :key="i" class="contrato-view-value">{{ linea }}</li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -73,19 +87,19 @@
           <section class="contrato-view-section">
             <h6 class="contrato-view-section-title"><i class="fa-solid fa-money-bill-wave me-2"></i>Presupuesto</h6>
             <div class="row g-2">
-              <div class="col-sm-4">
+              <div class="col-sm-12">
                 <div class="contrato-view-field">
                   <span class="contrato-view-label">Paquete</span>
-                  <span class="contrato-view-value">{{ contrato.paquete || '—' }}</span>
+                  <span class="contrato-view-value">{{ displayContrato.paquete }}</span>
                 </div>
               </div>
-              <div class="col-sm-4">
+              <div class="col-sm-6">
                 <div class="contrato-view-field">
                   <span class="contrato-view-label">Precio</span>
                   <span class="contrato-view-value fw-semibold">{{ formatCurrency(contrato.precio) }}</span>
                 </div>
               </div>
-              <div class="col-sm-4">
+              <div class="col-sm-6">
                 <div class="contrato-view-field">
                   <span class="contrato-view-label">Anticipo</span>
                   <span class="contrato-view-value">{{ formatCurrency(contrato.anticipo) }}</span>
@@ -94,7 +108,7 @@
               <div class="col-12">
                 <div class="contrato-view-field">
                   <span class="contrato-view-label">Memoria entregada</span>
-                  <span class="contrato-view-value">{{ contrato.memoria_entregada ? 'Sí' : 'No' }}</span>
+                  <span class="contrato-view-value">{{ contrato.memoria_entregada ? 'SÍ' : 'NO' }}</span>
                 </div>
               </div>
             </div>
@@ -102,18 +116,18 @@
 
           <section class="contrato-view-section">
             <h6 class="contrato-view-section-title"><i class="fa-solid fa-video me-2"></i>Videos</h6>
-            <div v-if="enlaces.length" class="d-flex flex-wrap gap-2">
-              <a v-for="(enlace, i) in enlaces" :key="i" :href="enlace" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary contrato-view-video-btn">
-                <i class="fa-solid fa-play me-1"></i>Video {{ i + 1 }}
+            <div v-if="videosList.length" class="d-flex flex-wrap gap-2">
+              <a v-for="(v, i) in videosList" :key="i" :href="v.url" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary contrato-view-video-btn">
+                <i class="fa-solid fa-play me-1"></i>{{ v.nombre || `Video ${i + 1}` }}
               </a>
             </div>
-            <p v-else class="text-muted small mb-0">Sin enlaces registrados</p>
+            <p v-else class="text-muted small mb-0">Sin videos registrados</p>
           </section>
 
           <section class="contrato-view-section" v-if="contrato.descripcion || contrato.notas">
             <h6 class="contrato-view-section-title"><i class="fa-solid fa-note-sticky me-2"></i>Notas</h6>
-            <p v-if="contrato.descripcion" class="contrato-view-note">{{ contrato.descripcion }}</p>
-            <p v-if="contrato.notas" class="contrato-view-note mb-0">{{ contrato.notas }}</p>
+            <p v-if="displayContrato.descripcion && displayContrato.descripcion !== '—'" class="contrato-view-note">{{ displayContrato.descripcion }}</p>
+            <p v-if="displayContrato.notas && displayContrato.notas !== '—'" class="contrato-view-note mb-0">{{ displayContrato.notas }}</p>
           </section>
 
           <p class="text-muted small mt-3 mb-0">
@@ -132,6 +146,17 @@
             <i class="fa-brands fa-whatsapp me-1"></i>
             Enviar videos al cliente
           </button>
+          <button
+            v-if="contrato"
+            type="button"
+            class="btn btn-success"
+            :disabled="!puedeReenviarWhatsApp"
+            :title="puedeReenviarWhatsApp ? 'Abre WhatsApp enviando el mensaje de entrega a tu propio número' : 'Necesitas tener un teléfono en tu cuenta y al menos un enlace de video'"
+            @click="reenviarAMiWhatsApp"
+          >
+            <i class="fa-brands fa-whatsapp me-1"></i>
+            Reenviar videos a mi WhatsApp
+          </button>
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" @click="cerrar">Cerrar</button>
           <button type="button" class="btn btn-primary" @click="onEditar">
             <i class="fa-solid fa-pen me-1"></i>Editar
@@ -146,16 +171,20 @@
 import { ref, computed, watch } from 'vue';
 import { Modal } from 'bootstrap';
 import type { Contrato } from '@/types/contrato';
+import { useAuth } from '@/composables/useAuth';
 import {
   formatDate,
   formatTime,
   formatDateTime,
   formatCurrency,
-  formatEstado,
   getEstadoBadgeClass,
-  parseEnlaces
+  contratoToDisplayUpper,
+  formatPadrinosForDisplay,
+  parseVideosEnlaces,
 } from '@/utils/contratoFormatters';
 import { getWhatsAppEntregaVideosUrl } from '@/utils/whatsappService';
+
+const { currentUser } = useAuth();
 
 const props = defineProps<{
   show: boolean;
@@ -170,19 +199,32 @@ const emit = defineEmits<{
 const modalEl = ref<HTMLElement | null>(null);
 let modalInstance: InstanceType<typeof Modal> | null = null;
 
-const enlaces = computed(() => (props.contrato ? parseEnlaces(props.contrato.enlaces_videos) : []));
+const videosList = computed(() => (props.contrato ? parseVideosEnlaces(props.contrato.enlaces_videos) : []));
+
+const padrinosDisplayList = computed(() =>
+  props.contrato ? formatPadrinosForDisplay(props.contrato.padrinos) : []
+);
+
+/** Contrato con textos en mayúsculas para la vista */
+const displayContrato = computed(() => contratoToDisplayUpper(props.contrato));
 
 const tituloModal = computed(() => {
-  if (!props.contrato) return 'Detalle del contrato';
-  const tipo = props.contrato.tipo_evento || 'Contrato';
-  const quien = props.contrato.contratante?.trim();
+  if (!displayContrato.value) return 'DETALLE DEL CONTRATO';
+  const tipo = displayContrato.value.tipo_evento || 'CONTRATO';
+  const quien = displayContrato.value.contratante?.trim();
   return quien ? `${tipo} — ${quien}` : tipo;
 });
 
 const puedeEnviarVideos = computed(() => {
   if (!props.contrato) return false;
   const tel = (props.contrato.telefono || '').replace(/\D/g, '');
-  return tel.length >= 10 && enlaces.value.length > 0;
+  return tel.length >= 10 && videosList.value.length > 0;
+});
+
+const puedeReenviarWhatsApp = computed(() => {
+  if (!props.contrato || !currentUser.value) return false;
+  const tel = (currentUser.value.telefono || '').replace(/\D/g, '');
+  return tel.length >= 10 && videosList.value.length > 0;
 });
 
 watch(
@@ -213,6 +255,12 @@ function onEditar() {
 function enviarVideosAlCliente() {
   if (!props.contrato) return;
   const url = getWhatsAppEntregaVideosUrl(props.contrato);
+  if (url) window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+function reenviarAMiWhatsApp() {
+  if (!props.contrato || !currentUser.value?.telefono) return;
+  const url = getWhatsAppEntregaVideosUrl(props.contrato, currentUser.value.telefono);
   if (url) window.open(url, '_blank', 'noopener,noreferrer');
 }
 </script>
@@ -284,6 +332,14 @@ function enviarVideosAlCliente() {
 .contrato-view-value {
   font-size: 0.95rem;
   color: #212529;
+}
+
+.contrato-view-padrinos-list {
+  font-size: 0.95rem;
+  color: #212529;
+}
+.contrato-view-padrinos-list li + li {
+  margin-top: 0.25rem;
 }
 
 .contrato-view-video-btn {

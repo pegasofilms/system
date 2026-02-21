@@ -54,77 +54,47 @@
                   <input v-model="form.contratante" type="text" class="form-control">
                 </div>
                 <div class="col-12">
-                  <label class="form-label">Teléfono<span class="text-danger">*</span></label>
-                  <input v-model="form.telefono" type="tel" class="form-control" placeholder="Ej. 954 123 4567" required>
+                  <label class="form-label">Teléfono</label>
+                  <input
+                    :value="form.telefono"
+                    type="tel"
+                    class="form-control"
+                    :class="{ 'is-invalid': telefonoInvalido }"
+                    placeholder="10 dígitos (ej. 9541234567)"
+                    maxlength="10"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
+                    @input="onTelefonoInput"
+                  >
+                  <div v-if="telefonoInvalido" class="invalid-feedback">El teléfono debe tener exactamente 10 dígitos.</div>
                 </div>
                 <div class="col-md-12">
                   <label class="form-label">Festejado</label>
                   <input v-model="form.festejado" type="text" class="form-control">
                 </div>
-                <div class="col-md-12">
+                <div class="col-12">
                   <label class="form-label">Padrinos</label>
-                  <input v-model="form.padrinos" type="text" class="form-control">
+                  <div v-for="(p, idx) in form.padrinosLista" :key="idx" class="padrino-row mb-2 d-flex flex-wrap gap-2 align-items-end">
+                    <div class="flex-grow-1" style="min-width: 140px;">
+                      <label class="form-label small mb-0">¿Padrino o madrina de qué?</label>
+                      <input v-model="p.deQue" type="text" class="form-control form-control-sm" placeholder="Ej. anillos, lazo, velación">
+                    </div>
+                    <div class="flex-grow-1" style="min-width: 140px;">
+                      <label class="form-label small mb-0">Nombre</label>
+                      <input v-model="p.nombre" type="text" class="form-control form-control-sm" placeholder="Nombre completo">
+                    </div>
+                    <button type="button" class="btn btn-outline-danger btn-sm" title="Quitar" @click="quitarPadrino(idx)">
+                      <i class="fa-solid fa-minus"></i>
+                    </button>
+                  </div>
+                  <button type="button" class="btn btn-outline-primary btn-sm mt-1" @click="agregarPadrino">
+                    <i class="fa-solid fa-plus me-1"></i>Agregar padrino
+                  </button>
                 </div>
                 <div class="col-md-12">
                   <label class="form-label">Padres</label>
                   <input v-model="form.padres" type="text" class="form-control">
                 </div>
-              </div>
-            </section>
-
-            <section class="contrato-form-section">
-              <h6 class="contrato-form-section-title"><i class="fa-solid fa-money-bill-wave me-2"></i>Presupuesto</h6>
-              <div class="row g-3">
-                <div class="col-12">
-                  <label class="form-label">Paquete</label>
-                  <select v-model="form.paquete" class="form-select">
-                    <option value="">—</option>
-                    <option value="Solo transmisión">Solo transmisión</option>
-                    <option value="Solo grabación">Solo grabación</option>
-                    <option value="Ambos (Transmisión + Grabación)">Ambos</option>
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Precio</label>
-                  <input v-model.number="form.precio" type="number" step="0.01" min="0" class="form-control">
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Anticipo</label>
-                  <input v-model.number="form.anticipo" type="number" step="0.01" min="0" class="form-control">
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Estado</label>
-                  <select v-model="form.estado" class="form-select">
-                    <option value="pendiente">Pendiente</option>
-                    <option value="confirmado">Confirmado</option>
-                    <option value="en_proceso">En proceso</option>
-                    <option value="completado">Completado</option>
-                    <option value="cancelado">Cancelado</option>
-                  </select>
-                </div>
-                <div class="col-12">
-                  <label class="form-label">Memoria entregada</label>
-                  <div class="form-check">
-                    <input v-model="form.memoria_entregada" type="checkbox" class="form-check-input" id="memoria">
-                    <label class="form-check-label" for="memoria">Sí</label>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <section class="contrato-form-section">
-              <h6 class="contrato-form-section-title"><i class="fa-solid fa-video me-2"></i>Videos (enlaces)</h6>
-              <div class="d-flex gap-2 mb-2">
-                <input v-model="nuevoVideoUrl" type="url" class="form-control" placeholder="https://youtube.com/watch?v=...">
-                <button type="button" class="btn btn-outline-primary" @click="agregarVideo" :disabled="!nuevoVideoUrl.trim()">
-                  <i class="fa-solid fa-plus me-1"></i>Agregar
-                </button>
-              </div>
-              <div v-if="form.enlacesLista.length" class="d-flex flex-wrap gap-2">
-                <span v-for="(url, idx) in form.enlacesLista" :key="idx" class="badge bg-light text-dark border border-secondary d-inline-flex align-items-center gap-1 py-2">
-                  <a :href="url" target="_blank" rel="noopener" class="text-dark text-decoration-none text-truncate" style="max-width: 200px;">{{ url }}</a>
-                  <button type="button" class="btn-close btn-close-sm p-0 ms-1" style="font-size: 0.6rem;" @click="quitarVideo(idx)" aria-label="Quitar"></button>
-                </span>
               </div>
             </section>
 
@@ -142,9 +112,76 @@
               </div>
             </section>
 
+            <section class="contrato-form-section">
+              <h6 class="contrato-form-section-title"><i class="fa-solid fa-money-bill-wave me-2"></i>Presupuesto</h6>
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Paquete</label>
+                  <select v-model="form.paquete" class="form-select">
+                    <option value="">—</option>
+                    <option value="Solo transmisión">Solo transmisión</option>
+                    <option value="Solo grabación">Solo grabación</option>
+                    <option value="Ambos (Transmisión + Grabación)">Ambos</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Precio</label>
+                  <input v-model.number="form.precio" type="number" step="0.01" min="0" class="form-control">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Anticipo</label>
+                  <input v-model.number="form.anticipo" type="number" step="0.01" min="0" class="form-control">
+                </div>
+                <div class="col-6">
+                  <label class="form-label">Memoria entregada</label>
+                  <div class="form-check">
+                    <input v-model="form.memoria_entregada" type="checkbox" class="form-check-input" id="memoria">
+                    <label class="form-check-label" for="memoria">Sí</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Estado</label>
+                  <select v-model="form.estado" class="form-select">
+                    <option value="pendiente">Pendiente</option>
+                    <option value="confirmado">Confirmado</option>
+                    <option value="en_proceso">En proceso</option>
+                    <option value="completado">Completado</option>
+                    <option value="cancelado">Cancelado</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+
+            <section class="contrato-form-section">
+              <h6 class="contrato-form-section-title"><i class="fa-solid fa-video me-2"></i>Videos (enlaces)</h6>
+              <div class="row g-2 mb-2">
+                <div class="col-md-4">
+                  <label class="form-label small mb-0">Nombre del video</label>
+                  <input v-model="nuevoVideoNombre" type="text" class="form-control form-control-sm" placeholder="Ej. intro, comida, baile">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small mb-0">URL</label>
+                  <input v-model="nuevoVideoUrl" type="url" class="form-control form-control-sm" placeholder="https://...">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                  <button type="button" class="btn btn-outline-primary btn-sm w-100" @click="agregarVideo" :disabled="!nuevoVideoUrl.trim()">
+                    <i class="fa-solid fa-plus me-1"></i>Agregar
+                  </button>
+                </div>
+              </div>
+              <div v-if="form.videosLista.length" class="d-flex flex-wrap gap-2">
+                <span v-for="(v, idx) in form.videosLista" :key="idx" class="badge bg-light text-dark border border-secondary d-inline-flex align-items-center gap-1 py-2">
+                  <span class="fw-semibold">{{ v.nombre || 'Sin nombre' }}</span>
+                  <span class="text-muted">·</span>
+                  <a :href="v.url" target="_blank" rel="noopener" class="text-dark text-decoration-none text-truncate" style="max-width: 180px;">{{ v.url }}</a>
+                  <button type="button" class="btn-close btn-close-sm p-0 ms-1" style="font-size: 0.6rem;" @click="quitarVideo(idx)" aria-label="Quitar"></button>
+                </span>
+              </div>
+            </section>
+
             <div class="contrato-form-footer-actions">
               <button type="button" class="btn btn-outline-secondary" @click="cerrar">Cancelar</button>
-              <button type="submit" class="btn btn-primary" :disabled="props.saving ?? false">
+              <button type="submit" class="btn btn-primary" :disabled="(props.saving ?? false) || telefonoInvalido">
                 {{ (props.saving ?? false) ? 'Guardando...' : (esEdicion ? 'Guardar cambios' : 'Crear contrato') }}
               </button>
             </div>
@@ -156,12 +193,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, reactive } from 'vue';
+import { ref, watch, reactive, computed } from 'vue';
 import { Modal } from 'bootstrap';
-import type { Contrato } from '@/types/contrato';
-import type { ContratoFormPayload } from '@/types/contrato';
+import type { Contrato, ContratoFormPayload, PadrinoEntry, VideoEntry } from '@/types/contrato';
 import { TIPOS_EVENTO } from '@/data/tiposEvento';
-import { parseEnlaces } from '@/utils/contratoFormatters';
+import { parsePadrinos, parseVideosEnlaces } from '@/utils/contratoFormatters';
 
 const props = defineProps<{
   show: boolean;
@@ -177,7 +213,24 @@ const emit = defineEmits<{
 
 const modalEl = ref<HTMLElement | null>(null);
 const formEl = ref<HTMLFormElement | null>(null);
+const nuevoVideoNombre = ref('');
 const nuevoVideoUrl = ref('');
+
+function normalizarTelefono(val: string): string {
+  const soloNumeros = (val || '').replace(/\D/g, '');
+  return soloNumeros.slice(0, 10);
+}
+
+const telefonoInvalido = computed(() => {
+  const t = (form.telefono || '').replace(/\D/g, '');
+  if (t.length === 0) return false;
+  return t.length !== 10;
+});
+
+function onTelefonoInput(e: Event) {
+  const target = e.target as HTMLInputElement;
+  form.telefono = normalizarTelefono(target.value);
+}
 
 const defaultForm = () =>
   reactive({
@@ -192,10 +245,10 @@ const defaultForm = () =>
     anticipo: null as number | null,
     estado: 'pendiente',
     memoria_entregada: false,
-    padrinos: '',
+    padrinosLista: [] as PadrinoEntry[],
     padres: '',
     festejado: '',
-    enlacesLista: [] as string[],
+    videosLista: [] as VideoEntry[],
     descripcion: '',
     notas: '',
     _id: null as number | null
@@ -215,13 +268,14 @@ function resetForm() {
   form.anticipo = null;
   form.estado = 'pendiente';
   form.memoria_entregada = false;
-  form.padrinos = '';
+  form.padrinosLista = [];
   form.padres = '';
   form.festejado = '';
-  form.enlacesLista = [];
+  form.videosLista = [];
   form.descripcion = '';
   form.notas = '';
   form._id = null;
+  nuevoVideoNombre.value = '';
   nuevoVideoUrl.value = '';
 }
 
@@ -231,19 +285,20 @@ function loadContrato(c: Contrato) {
   form.hora_evento = c.hora_evento ? (c.hora_evento + '').slice(0, 5) : '';
   form.lugar = c.lugar || '';
   form.contratante = c.contratante || '';
-  form.telefono = c.telefono || '';
+  form.telefono = normalizarTelefono(c.telefono || '');
   form.paquete = c.paquete || '';
   form.precio = c.precio != null ? Number(c.precio) : null;
   form.anticipo = c.anticipo != null ? Number(c.anticipo) : null;
   form.estado = c.estado || 'pendiente';
   form.memoria_entregada = !!c.memoria_entregada;
-  form.padrinos = c.padrinos || '';
+  form.padrinosLista = parsePadrinos(c.padrinos || '');
   form.padres = c.padres || '';
   form.festejado = c.festejado || '';
-  form.enlacesLista = parseEnlaces(c.enlaces_videos || '');
+  form.videosLista = parseVideosEnlaces(c.enlaces_videos || '');
   form.descripcion = c.descripcion || '';
   form.notas = c.notas || '';
   form._id = c.id;
+  nuevoVideoNombre.value = '';
   nuevoVideoUrl.value = '';
 }
 
@@ -271,13 +326,25 @@ watch(
 function agregarVideo() {
   const url = nuevoVideoUrl.value.trim();
   if (url) {
-    form.enlacesLista.push(url);
+    form.videosLista.push({
+      nombre: nuevoVideoNombre.value.trim() || `Video ${form.videosLista.length + 1}`,
+      url
+    });
+    nuevoVideoNombre.value = '';
     nuevoVideoUrl.value = '';
   }
 }
 
 function quitarVideo(idx: number) {
-  form.enlacesLista.splice(idx, 1);
+  form.videosLista.splice(idx, 1);
+}
+
+function agregarPadrino() {
+  form.padrinosLista.push({ deQue: '', nombre: '' });
+}
+
+function quitarPadrino(idx: number) {
+  form.padrinosLista.splice(idx, 1);
 }
 
 function cerrar() {
@@ -286,6 +353,7 @@ function cerrar() {
 }
 
 function submit() {
+  if (telefonoInvalido.value) return;
   const payload: ContratoFormPayload & { id?: number } = {
     tipo_evento: form.tipo_evento,
     fecha_evento: form.fecha_evento,
@@ -298,10 +366,16 @@ function submit() {
     anticipo: form.anticipo ?? null,
     estado: form.estado,
     memoria_entregada: form.memoria_entregada,
-    padrinos: form.padrinos || null,
+    padrinos:
+      form.padrinosLista.length && form.padrinosLista.some((p) => p.deQue.trim() || p.nombre.trim())
+        ? JSON.stringify(form.padrinosLista.filter((p) => p.deQue.trim() || p.nombre.trim()))
+        : null,
     padres: form.padres || null,
     festejado: form.festejado || null,
-    enlaces_videos: form.enlacesLista.length ? form.enlacesLista.join(',') : null,
+    enlaces_videos:
+      form.videosLista.length && form.videosLista.some((v) => v.url.trim())
+        ? JSON.stringify(form.videosLista.filter((v) => v.url.trim()))
+        : null,
     descripcion: form.descripcion || null,
     notas: form.notas || null
   };

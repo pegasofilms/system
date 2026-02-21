@@ -3,8 +3,8 @@
     <nav class="navbar navbar-expand-lg navbar-light py-3 bg-white navbar-pegaso">
       <div class="container d-flex justify-content-between align-items-center">
         <router-link class="navbar-brand d-flex align-items-center" to="/">
-          <img :src="logoPath" alt="PEGASO FILMS" width="40" height="40" class="d-inline-block align-text-top me-2">
-          <strong>PEGASO FILMS</strong>
+          <img :src="logoPath" :alt="EMPRESA.nombre" width="40" height="40" class="d-inline-block align-text-top me-2">
+          <strong>{{ EMPRESA.nombre }}</strong>
         </router-link>
         <router-link to="/" class="btn btn-outline-secondary btn-sm">
           <i class="fa-solid fa-arrow-left me-1"></i>
@@ -18,7 +18,7 @@
         <div class="col-lg-8">
           <div class="card shadow-lg border-0">
             <div class="card-header bg-primary text-center py-2">
-              <img :src="logoPath" alt="PEGASO FILMS" width="60" height="60">
+              <img :src="logoPath" :alt="EMPRESA.nombre" width="60" height="60">
               <h2 class="h3 fw-bold mb-0 text-primary">Cotizar</h2>
               <p class="mb-0 mt-2 small opacity-75 text-primary">Elige tipo de evento, lugar y paquete. Te mostramos un precio estimado.</p>
             </div>
@@ -133,6 +133,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue';
 import Swal from 'sweetalert2';
+import { EMPRESA } from '@/data/empresa';
 import { getMunicipiosOaxaca } from '@/data/municipiosOaxaca';
 import { TIPOS_EVENTO } from '@/data/tiposEvento';
 import { getWhatsAppCotizacionUrl } from '@/utils/whatsappService';

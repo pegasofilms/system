@@ -3,8 +3,8 @@
     <nav class="navbar navbar-expand-lg navbar-light py-3 bg-white navbar-pegaso">
       <div class="container d-flex justify-content-between align-items-center">
         <router-link class="navbar-brand d-flex align-items-center" to="/">
-          <img :src="logoPath" alt="PEGASO FILMS" width="40" height="40" class="d-inline-block align-text-top me-2">
-          <strong>PEGASO FILMS</strong>
+          <img :src="logoPath" :alt="EMPRESA.nombre" width="40" height="40" class="d-inline-block align-text-top me-2">
+          <strong>{{ EMPRESA.nombre }}</strong>
         </router-link>
         <div class="d-flex align-items-center gap-3">
           <span class="text-muted small">{{ currentUser?.nombre_completo || currentUser?.username }}</span>
@@ -55,6 +55,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
+import { EMPRESA } from '@/data/empresa';
 import Swal from 'sweetalert2';
 import type { Contrato } from '@/types/contrato';
 import type { ContratoFormPayload } from '@/types/contrato';

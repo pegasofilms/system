@@ -6,22 +6,39 @@
           <div class="card shadow-lg border-0">
             <div class="card-body p-5">
               <div class="text-center mb-4">
-                <img :src="logoPath" alt="PEGASO FILMS" width="60" height="60" class="mb-3">
+                <img :src="logoPath" :alt="EMPRESA.nombre" width="60" height="60" class="mb-3">
                 <h2 class="h3 fw-bold text-dark mb-2">Iniciar Sesión</h2>
                 <p class="text-muted small">Ingresa tus credenciales para continuar</p>
               </div>
 
               <form @submit.prevent="handleLogin">
                 <div class="mb-3">
-                  <label for="email" class="form-label fw-semibold">Email o Usuario</label>
-                  <input type="text" class="form-control" id="email" v-model="formData.email" placeholder="tu@email.com"
+                  <label for="email" class="form-label fw-semibold">Usuario</label>
+                  <input type="text" class="form-control" id="email" v-model="formData.email" placeholder="PegasoFilmsUser"
                     required autocomplete="username" />
                 </div>
 
                 <div class="mb-4">
                   <label for="password" class="form-label fw-semibold">Contraseña</label>
-                  <input type="password" class="form-control" id="password" v-model="formData.password"
-                    placeholder="••••••••" required autocomplete="current-password" />
+                  <div class="login-password-wrap">
+                    <input
+                      :type="showPassword ? 'text' : 'password'"
+                      class="form-control login-password-input"
+                      id="password"
+                      v-model="formData.password"
+                      placeholder="••••••••"
+                      required
+                      autocomplete="current-password"
+                    />
+                    <button
+                      type="button"
+                      class="login-password-toggle"
+                      :aria-label="showPassword ? 'Ocultar contraseña' : 'Ver contraseña'"
+                      @click="showPassword = !showPassword"
+                    >
+                      <i :class="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                    </button>
+                  </div>
                 </div>
 
                 <div v-if="errorMessage" class="alert alert-danger" role="alert">
@@ -57,6 +74,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import { EMPRESA } from '@/data/empresa';
 import { supabase } from '@/utils/supabase';
 import { useAuth } from '@/composables/useAuth';
 
@@ -72,6 +90,7 @@ const formData = reactive({
 const loading = ref(false);
 const errorMessage = ref('');
 const successMessage = ref('');
+const showPassword = ref(false);
 
 const handleLogin = async () => {
   // Limpiar mensajes anteriores
@@ -82,7 +101,7 @@ const handleLogin = async () => {
   try {
     const { data, error: supabaseError } = await supabase
       .from('user')
-      .select('id, username, password, email, nombre_completo')
+      .select('id, username, password, email, nombre_completo, telefono')
       .eq('username', formData.email)
       .eq('password', formData.password)
       .maybeSingle();
@@ -98,7 +117,8 @@ const handleLogin = async () => {
         id: data.id,
         username: data.username,
         email: data.email,
-        nombre_completo: data.nombre_completo
+        nombre_completo: data.nombre_completo,
+        telefono: data.telefono ?? null
       };
       saveSession(userData);
       
@@ -123,6 +143,33 @@ const handleLogin = async () => {
 
 .card {
   border-radius: 12px;
+}
+
+.login-password-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-password-input {
+  padding-right: 2.75rem;
+}
+
+.login-password-toggle {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6c757d;
+  padding: 0.25rem;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  line-height: 1;
+}
+.login-password-toggle:hover {
+  color: #224a9d;
 }
 
 .form-control:focus {
