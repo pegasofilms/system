@@ -1,4 +1,5 @@
 import type { Contrato, PadrinoEntry, VideoEntry } from '@/types/contrato';
+import { DESCRIPCION_INTRO_POR_TIPO, getHashtagsParaTipoEvento } from '@/data/tiposEvento';
 
 export function formatDate(date: string): string {
   if (!date) return 'N/A';
@@ -106,34 +107,79 @@ export function formatPadrinosForDisplay(json: string | null): string[] {
 }
 
 /**
- * Genera una sugerencia de título para redes sociales a partir del contrato:
- * "Tipo de evento de Festejado - Lugar" + padrinos si existen + hashtags.
+ * Sugerencia de título del video: solo tipo de evento, festejado y lugar.
  */
-export function sugerenciaTituloRedes(c: Contrato | null): string {
+export function sugerenciaTituloVideo(c: Contrato | null): string {
+  if (!c) return '';
+  const tipo = (c.tipo_evento || '').trim() || 'Evento';
+  const festejado = (c.festejado || '').trim();
+  const lugar = (c.lugar || '').trim();
+  const linea =
+    tipo + (festejado ? ' de ' + festejado : '') + (lugar ? ' - ' + lugar : '');
+  return linea.toUpperCase();
+}
+
+/** Primera letra de cada oración en mayúscula; resto en minúsculas (regla gramatical). Preserva "Pegaso Films". */
+function oracionesConMayusc(texto: string): string {
+  const resultado = texto
+    .split('. ')
+    .map((s) => (s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()).trim())
+    .join('. ')
+    .trim();
+  return resultado.replace(/\bpegaso films\b/gi, 'PEGASO FILMS');
+}
+
+/**
+ * Sugerencia de descripción del video: intro personalizada por tipo (reglas gramaticales),
+ * padrinos en mayúsculas si existen, hashtags en minúsculas.
+ */
+export function sugerenciaDescripcionVideo(c: Contrato | null): string {
   if (!c) return '';
   const tipo = (c.tipo_evento || '').trim() || 'Evento';
   const festejado = (c.festejado || '').trim();
   const lugar = (c.lugar || '').trim();
   const partes: string[] = [];
-  partes.push(tipo + (festejado ? ' de ' + festejado : '') + (lugar ? ' - ' + lugar : ''));
+
+  const plantilla = DESCRIPCION_INTRO_POR_TIPO[tipo] ?? DESCRIPCION_INTRO_POR_TIPO['Otro'];
+  if (plantilla) {
+    const introConMayusc = oracionesConMayusc(plantilla);
+    const festejadosMayusc = (festejado || 'los festejados').toUpperCase();
+    const intro = introConMayusc.replace(/\{festejados\}/gi, festejadosMayusc);
+    partes.push(intro);
+  }
+
   const padrinos = parsePadrinos(c.padrinos);
   if (padrinos.length > 0) {
-    const txtPadrinos = padrinos
-      .map((p) => (p.deQue ? `${p.deQue}: ${p.nombre}` : p.nombre).trim())
-      .filter(Boolean)
-      .join(', ');
-    if (txtPadrinos) partes.push('Padrinos: ' + txtPadrinos);
+    if (padrinos.length > 0) {
+      const txtPadrinosSalto = padrinos
+        .map((p) =>
+          (p.deQue
+            ? `${p.deQue}: ${p.nombre}`
+            : p.nombre
+          ).trim()
+        )
+        .filter(Boolean)
+        .map((txt) =>
+          txt
+            .toLowerCase()
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ')
+        )
+        .join('\n');
+      partes.push('Padrinos:' + (txtPadrinosSalto ? '\n' + txtPadrinosSalto : ''));
+    }
   }
-  const hashtags: string[] = [];
-  const tipoTag = tipo.replace(/\s+/g, '');
-  if (tipoTag) hashtags.push('#' + tipoTag);
+
+  const hashtags = [...getHashtagsParaTipoEvento(tipo)];
   if (lugar) {
     const lugarTag = lugar.split(',')[0].trim().replace(/\s+/g, '');
-    if (lugarTag) hashtags.push('#' + lugarTag);
+    if (lugarTag) hashtags.push('#' + lugarTag.toLowerCase());
   }
-  hashtags.push('#PegasoFilms');
-  partes.push(hashtags.join(' '));
-  return partes.join('\n').toUpperCase();
+  hashtags.push('#pegasofilms');
+  partes.push(hashtags.map((h) => h.toLowerCase()).join(' '));
+
+  return partes.join('\n\n');
 }
 
 /** Convierte un contrato en una versión para vista con textos en mayúsculas */

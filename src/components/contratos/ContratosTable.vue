@@ -1,28 +1,19 @@
 <template>
   <div>
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-      <h1 class="h4 fw-bold mb-0">Contratos</h1>
       <div class="d-flex flex-wrap align-items-center gap-2">
         <div class="d-flex align-items-center gap-2">
           <label class="small text-muted mb-0">Año</label>
-          <select
-            :value="filtroAnio"
-            @change="$emit('update:filtro-anio', ($event.target as HTMLSelectElement).value)"
-            class="form-select form-select-sm"
-            style="max-width: 110px;"
-          >
+          <select :value="filtroAnio" @change="$emit('update:filtro-anio', ($event.target as HTMLSelectElement).value)"
+            class="form-select form-select-sm" style="max-width: 110px;">
             <option value="">Todos</option>
             <option v-for="y in años" :key="y" :value="String(y)">{{ y }}</option>
           </select>
         </div>
         <div class="d-flex align-items-center gap-2">
           <label class="small text-muted mb-0">Mes</label>
-          <select
-            :value="filtroMes"
-            @change="$emit('update:filtro-mes', ($event.target as HTMLSelectElement).value)"
-            class="form-select form-select-sm"
-            style="max-width: 140px;"
-          >
+          <select :value="filtroMes" @change="$emit('update:filtro-mes', ($event.target as HTMLSelectElement).value)"
+            class="form-select form-select-sm" style="max-width: 140px;">
             <option value="">Todos</option>
             <option v-for="m in meses" :key="m.value" :value="m.value">{{ m.nombre }}</option>
           </select>
@@ -31,7 +22,7 @@
           <i :class="filtroAnio ? 'fa-solid fa-list' : 'fa-solid fa-calendar-day'" class="me-1"></i>
           {{ filtroAnio ? 'Ver todos' : 'Ver mes actual' }}
         </button>
-        <button type="button" class="btn btn-primary" @click="$emit('nuevo')">
+        <button type="button" class="btn btn-primary  btn-sm" @click="$emit('nuevo')">
           <i class="fa-solid fa-plus me-1"></i>Nuevo contrato
         </button>
         <button type="button" class="btn btn-outline-primary btn-sm" @click="$emit('actualizar')" :disabled="loading">
@@ -57,31 +48,18 @@
     <template v-else>
       <!-- Vista tabla: desktop (md y superior) -->
       <div class="d-none d-md-block">
-        <ContratosTableDesktop
-          :contratos="contratosOrdenados"
-          @ver="$emit('ver', $event)"
-          @editar="$emit('editar', $event)"
-          @eliminar="$emit('eliminar', $event)"
-          @sugerencia="abrirModalSugerencia"
-        />
+        <ContratosTableDesktop :contratos="contratosOrdenados" @ver="$emit('ver', $event)"
+          @editar="$emit('editar', $event)" @eliminar="$emit('eliminar', $event)" @sugerencia="abrirModalSugerencia" />
       </div>
 
       <!-- Vista cards: móvil (hasta md) -->
       <div class="d-md-none">
-        <ContratosTableMobile
-          :contratos="contratosOrdenados"
-          @ver="$emit('ver', $event)"
-          @editar="$emit('editar', $event)"
-          @eliminar="$emit('eliminar', $event)"
-          @sugerencia="abrirModalSugerencia"
-        />
+        <ContratosTableMobile :contratos="contratosOrdenados" @ver="$emit('ver', $event)"
+          @editar="$emit('editar', $event)" @eliminar="$emit('eliminar', $event)" @sugerencia="abrirModalSugerencia" />
       </div>
     </template>
 
-    <ContratosSugerenciaModal
-      :contrato="contratoSugerencia"
-      @cerrar="cerrarModalSugerencia"
-    />
+    <ContratosSugerenciaModal :contrato="contratoSugerencia" @cerrar="cerrarModalSugerencia" />
   </div>
 </template>
 

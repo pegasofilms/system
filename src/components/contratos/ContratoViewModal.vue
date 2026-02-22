@@ -11,10 +11,12 @@
               </h5>
               <p class="mb-0 small opacity-90 mt-1">
                 {{ contrato ? formatDate(contrato.fecha_evento) : '' }}
-                <span v-if="displayContrato?.lugar && displayContrato.lugar !== '—'" class="ms-2">· {{ displayContrato.lugar }}</span>
+                <span v-if="displayContrato?.lugar && displayContrato.lugar !== '—'" class="ms-2">· {{
+                  displayContrato.lugar }}</span>
               </p>
             </div>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar" @click="cerrar"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"
+              @click="cerrar"></button>
           </div>
         </div>
         <div v-if="contrato" class="modal-body">
@@ -114,10 +116,19 @@
             </div>
           </section>
 
+          <section class="contrato-view-section" v-if="contrato.descripcion || contrato.notas">
+            <h6 class="contrato-view-section-title"><i class="fa-solid fa-note-sticky me-2"></i>Notas</h6>
+            <p v-if="displayContrato.descripcion && displayContrato.descripcion !== '—'" class="contrato-view-note">{{
+              displayContrato.descripcion }}</p>
+            <p v-if="displayContrato.notas && displayContrato.notas !== '—'" class="contrato-view-note mb-0">{{
+              displayContrato.notas }}</p>
+          </section>
+
           <section class="contrato-view-section">
             <h6 class="contrato-view-section-title"><i class="fa-solid fa-video me-2"></i>Videos</h6>
             <div v-if="videosList.length" class="d-flex flex-wrap gap-2">
-              <a v-for="(v, i) in videosList" :key="i" :href="v.url" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary contrato-view-video-btn">
+              <a v-for="(v, i) in videosList" :key="i" :href="v.url" target="_blank" rel="noopener"
+                class="btn btn-sm btn-outline-primary contrato-view-video-btn">
                 <i class="fa-solid fa-play me-1"></i>{{ v.nombre || `Video ${i + 1}` }}
               </a>
             </div>
@@ -125,39 +136,36 @@
           </section>
 
           <section class="contrato-view-section" v-if="contrato.descripcion || contrato.notas">
-            <h6 class="contrato-view-section-title"><i class="fa-solid fa-note-sticky me-2"></i>Notas</h6>
-            <p v-if="displayContrato.descripcion && displayContrato.descripcion !== '—'" class="contrato-view-note">{{ displayContrato.descripcion }}</p>
-            <p v-if="displayContrato.notas && displayContrato.notas !== '—'" class="contrato-view-note mb-0">{{ displayContrato.notas }}</p>
+            <h6 class="contrato-view-section-title">
+              <i class="fa-solid fa-note-sticky me-2"></i>Enviar video a whatsapp
+            </h6>
+            <div class="row g-2">
+              <div class="col-6">
+                <button v-if="contrato" type="button" class="btn btn-success w-100" :disabled="!puedeEnviarVideos"
+                  :title="puedeEnviarVideos ? 'Abre WhatsApp con mensaje de entrega de videos al número del cliente' : 'Necesitas teléfono del cliente y al menos un enlace de video'"
+                  @click="enviarVideosAlCliente">
+                  <i class="fa-brands fa-whatsapp me-1"></i>
+                  Cliente
+                </button>
+              </div>
+              <div class="col-6">
+                <button v-if="contrato" type="button" class="btn btn-success w-100" :disabled="!puedeReenviarWhatsApp"
+                  :title="puedeReenviarWhatsApp ? 'Abre WhatsApp enviando el mensaje de entrega a tu propio número' : 'Necesitas tener un teléfono en tu cuenta y al menos un enlace de video'"
+                  @click="reenviarAMiWhatsApp">
+                  <i class="fa-brands fa-whatsapp me-1"></i>
+                  Mi número
+                </button>
+              </div>
+            </div>
           </section>
-
           <p class="text-muted small mt-3 mb-0">
             <i class="fa-solid fa-clock me-1"></i>Registrado: {{ formatDateTime(contrato.created_at) }}
           </p>
         </div>
+
         <div class="modal-footer flex-wrap gap-2 contrato-view-footer">
-          <button
-            v-if="contrato"
-            type="button"
-            class="btn btn-success"
-            :disabled="!puedeEnviarVideos"
-            :title="puedeEnviarVideos ? 'Abre WhatsApp con mensaje de entrega de videos al número del cliente' : 'Necesitas teléfono del cliente y al menos un enlace de video'"
-            @click="enviarVideosAlCliente"
-          >
-            <i class="fa-brands fa-whatsapp me-1"></i>
-            Enviar videos al cliente
-          </button>
-          <button
-            v-if="contrato"
-            type="button"
-            class="btn btn-success"
-            :disabled="!puedeReenviarWhatsApp"
-            :title="puedeReenviarWhatsApp ? 'Abre WhatsApp enviando el mensaje de entrega a tu propio número' : 'Necesitas tener un teléfono en tu cuenta y al menos un enlace de video'"
-            @click="reenviarAMiWhatsApp"
-          >
-            <i class="fa-brands fa-whatsapp me-1"></i>
-            Reenviar videos a mi WhatsApp
-          </button>
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" @click="cerrar">Cerrar</button>
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+            @click="cerrar">Cerrar</button>
           <button type="button" class="btn btn-primary" @click="onEditar">
             <i class="fa-solid fa-pen me-1"></i>Editar
           </button>
@@ -305,6 +313,8 @@ function reenviarAMiWhatsApp() {
   border-radius: 0.5rem;
   padding: 1rem 1.25rem;
   margin-bottom: 1rem;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  border: 2px solid #dee2e6;
 }
 
 .contrato-view-section-title {
@@ -338,7 +348,8 @@ function reenviarAMiWhatsApp() {
   font-size: 0.95rem;
   color: #212529;
 }
-.contrato-view-padrinos-list li + li {
+
+.contrato-view-padrinos-list li+li {
   margin-top: 0.25rem;
 }
 

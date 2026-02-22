@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light py-3 bg-white navbar-pegaso">
+  <nav class="navbar navbar-expand-lg navbar-light py-3 bg-white navbar-pegaso shadow-sm">
     <div class="container d-flex justify-content-between align-items-center">
       <router-link class="navbar-brand d-flex align-items-center" to="/" @click="goToHome">
         <img :src="logoPath" :alt="EMPRESA.nombre" width="40" height="40" class="d-inline-block align-text-top me-2">
@@ -9,28 +9,25 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse justify-content-end" :class="{ show: menuOpen }" id="navbarNav">
-        <ul class="navbar-nav gap-2 gap-lg-3 ms-auto align-items-center">
+        <ul class="navbar-nav navbar-pegaso-nav ms-auto align-items-center">
           <li class="nav-item">
-            <a class="nav-link" href="#" @click.prevent="handleNavClick('inicio')">Inicio</a>
+            <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('inicio')"><i class="fa-solid fa-house me-1"></i>Inicio</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" @click.prevent="handleNavClick('servicios')">Servicios</a>
+            <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('servicios')"><i class="fa-solid fa-gear me-1"></i>Servicios</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" @click.prevent="handleNavClick('como-trabajamos')">Como trabajamos</a>
+            <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('como-trabajamos')"><i class="fa-solid fa-satellite-dish me-1"></i>Como trabajamos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" @click.prevent="handleNavClick('videos')">Videos</a>
+            <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('videos')"><i class="fa-solid fa-video me-1"></i>Videos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" @click.prevent="handleNavClick('contacto')">Contacto</a>
+            <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('contacto')"><i class="fa-solid fa-envelope me-1"></i>Contacto</a>
           </li>
           <li class="nav-item">
-            <router-link to="/login" class="nav-link">Login</router-link>
+            <router-link to="/login" class="nav-link nav-pegaso-link"><i class="fa-solid fa-right-to-bracket me-1"></i>Iniciar sesión</router-link>
           </li>
-          <!-- <li class="nav-item">
-            <router-link to="/posts" class="nav-link">Ejemplos API</router-link>
-          </li> -->
         </ul>
       </div>
     </div>
@@ -100,35 +97,3 @@ const scrollToSection = (id: string, retries = 5) => {
   }
 };
 </script>
-
-<style scoped>
-.navbar-pegaso .navbar-brand,
-.navbar-pegaso .navbar-brand strong,
-.navbar-pegaso .nav-link {
-  color: rgb(0, 36, 102) !important;
-  font-weight: bold;
-}
-
-.navbar-brand {
-  text-decoration: none;
-}
-
-.navbar-toggler {
-  border: none;
-  padding: 0.25rem 0.5rem;
-}
-
-.navbar-toggler:focus {
-  box-shadow: none;
-}
-
-.navbar-collapse {
-  transition: all 0.3s ease;
-}
-
-@media (max-width: 991px) {
-  .navbar-collapse {
-    margin-top: 1rem;
-  }
-}
-</style>

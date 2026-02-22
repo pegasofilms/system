@@ -1,53 +1,29 @@
 <template>
   <div class="contratos-page">
-    <nav class="navbar navbar-expand-lg navbar-light py-3 bg-white navbar-pegaso">
-      <div class="container d-flex justify-content-between align-items-center">
-        <router-link class="navbar-brand d-flex align-items-center" to="/">
-          <img :src="logoPath" :alt="EMPRESA.nombre" width="40" height="40" class="d-inline-block align-text-top me-2">
-          <strong>{{ EMPRESA.nombre }}</strong>
-        </router-link>
-        <div class="d-flex align-items-center gap-3">
-          <span class="text-muted small">{{ currentUser?.nombre_completo || currentUser?.username }}</span>
-          <button type="button" class="btn btn-outline-danger btn-sm" @click="handleLogout">
-            <i class="fa-solid fa-sign-out-alt me-1"></i>
-            Cerrar Sesión
-          </button>
+    <NavbarAdmin />
+    <div class="container">
+      <div class="row">
+        <div class="col-12 d-flex align-items-center justify-content-between">
+          <h1 class="h4 fw-bold mb-0 text-primary">Contratos</h1>
+          <span v-if="currentUser" class="text-muted small ms-3">
+            <i class="fa-solid fa-user me-1"></i>
+            {{ currentUser.nombre_completo }}
+          </span>
         </div>
       </div>
-    </nav>
-
-    <div class="container my-4">
-      <ContratosTable
-        :contratos="contratosFiltrados"
-        :loading="loading"
-        :error-message="errorMessage"
-        v-model:filtro-anio="filtroAnio"
-        v-model:filtro-mes="filtroMes"
-        @clear-filtros="clearFiltros"
-        @ver-mes-actual="verMesActual"
-        @nuevo="openCreate"
-        @actualizar="loadContratos"
-        @ver="openVer"
-        @editar="openEdit"
-        @eliminar="confirmDelete"
-      />
+    </div>
+    <div class="container my-2">
+      <ContratosTable :contratos="contratosFiltrados" :loading="loading" :error-message="errorMessage"
+        v-model:filtro-anio="filtroAnio" v-model:filtro-mes="filtroMes" @clear-filtros="clearFiltros"
+        @ver-mes-actual="verMesActual" @nuevo="openCreate" @actualizar="loadContratos" @ver="openVer" @editar="openEdit"
+        @eliminar="confirmDelete" />
     </div>
 
-    <ContratoViewModal
-      :show="showModalVer"
-      :contrato="contratoSeleccionado"
-      @cerrar="showModalVer = false"
-      @editar="cerrarVerYAbrirEditar"
-    />
+    <ContratoViewModal :show="showModalVer" :contrato="contratoSeleccionado" @cerrar="showModalVer = false"
+      @editar="cerrarVerYAbrirEditar" />
 
-    <ContratoFormModal
-      :show="showModalForm"
-      :es-edicion="esEdicion"
-      :contrato="contratoAEditar"
-      :saving="saving"
-      @cerrar="cerrarForm"
-      @submit="onFormSubmit"
-    />
+    <ContratoFormModal :show="showModalForm" :es-edicion="esEdicion" :contrato="contratoAEditar" :saving="saving"
+      @cerrar="cerrarForm" @submit="onFormSubmit" />
   </div>
 </template>
 
@@ -55,19 +31,18 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
-import { EMPRESA } from '@/data/empresa';
 import Swal from 'sweetalert2';
 import type { Contrato } from '@/types/contrato';
 import type { ContratoFormPayload } from '@/types/contrato';
 import { fetchContratos, createContrato, updateContrato, deleteContrato } from '@/services/contratosApi';
 import { formatDate } from '@/utils/contratoFormatters';
+import NavbarAdmin from '@/components/NavbarAdmin.vue';
 import ContratosTable from '@/components/contratos/ContratosTable.vue';
 import ContratoViewModal from '@/components/contratos/ContratoViewModal.vue';
 import ContratoFormModal from '@/components/contratos/ContratoFormModal.vue';
 
 const router = useRouter();
-const { currentUser, clearSession, isAuthenticated } = useAuth();
-const logoPath = `${import.meta.env.BASE_URL}img/logo.png`;
+const { currentUser, isAuthenticated } = useAuth();
 
 const contratos = ref<Contrato[]>([]);
 const loading = ref(false);
@@ -214,10 +189,6 @@ async function confirmDelete(c: Contrato) {
   await loadContratos(); // refrescar por si hay filtros o sincronización
 }
 
-function handleLogout() {
-  clearSession();
-  router.push('/login');
-}
 </script>
 
 <style scoped>

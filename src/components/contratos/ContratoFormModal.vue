@@ -124,11 +124,11 @@
                     <option value="Ambos (Transmisión + Grabación)">Ambos</option>
                   </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-6">
                   <label class="form-label">Precio</label>
                   <input v-model.number="form.precio" type="number" step="0.01" min="0" class="form-control">
                 </div>
-                <div class="col-md-6">
+                <div class="col-6">
                   <label class="form-label">Anticipo</label>
                   <input v-model.number="form.anticipo" type="number" step="0.01" min="0" class="form-control">
                 </div>
@@ -139,7 +139,7 @@
                     <label class="form-check-label" for="memoria">Sí</label>
                   </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-6">
                   <label class="form-label">Estado</label>
                   <select v-model="form.estado" class="form-select">
                     <option value="pendiente">Pendiente</option>
@@ -422,6 +422,8 @@ function submit() {
   border-radius: 0.5rem;
   padding: 1rem 1.25rem;
   margin-bottom: 1rem;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  border: 2px solid #dee2e6;
 }
 
 .contrato-form-section-title {

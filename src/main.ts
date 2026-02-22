@@ -10,6 +10,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Swal from "sweetalert2";
 import "@/style.css";
+import "@/styles/navbar.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 

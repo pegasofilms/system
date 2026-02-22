@@ -7,29 +7,26 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" @click="cerrar"></button>
         </div>
         <div class="modal-body">
-          <p class="text-muted small mb-2">
-            Copia este texto para usar como título o descripción en redes sociales
-            <i class="fa-brands fa-facebook text-info mx-1"></i>
-            <i class="fa-brands fa-youtube text-danger mx-1"></i>
-            <i class="fa-solid fa-broadcast-tower text-danger mx-1"></i>
-          </p>
-          <textarea
-            :value="contrato ? sugerenciaTituloRedes(contrato) : ''"
-            class="form-control font-monospace mb-2"
-            readonly
-            rows="10"
-          ></textarea>
+          <label class="form-label small fw-semibold text-muted">Título (evento, festejado y lugar)</label>
+          <textarea :value="contrato ? sugerenciaTituloVideo(contrato) : ''" class="form-control font-monospace mb-3"
+            readonly rows="2"></textarea>
+          <div class="d-flex justify-content-end mb-2">
+            <button type="button" class="btn btn-sm btn-outline-primary" :disabled="!contrato" title="Copiar título"
+              @click="contrato && copiarTitulo(contrato)">
+              <i class="fa-solid fa-copy me-1"></i>Copiar
+            </button>
+          </div>
+          <label class="form-label small fw-semibold text-muted">Descripción (padrinos, # y más)</label>
+          <textarea :value="contrato ? sugerenciaDescripcionVideo(contrato) : ''"
+            class="form-control font-monospace mb-2" readonly rows="6"></textarea>
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-sm btn-outline-primary" :disabled="!contrato"
+              title="Copiar descripción" @click="contrato && copiarDescripcion(contrato)">
+              <i class="fa-solid fa-copy me-1"></i>Copiar
+            </button>
+          </div>
         </div>
         <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-primary"
-            :disabled="!contrato"
-            title="Copiar"
-            @click="contrato && copiarSugerencia(contrato)"
-          >
-            <i class="fa-solid fa-copy me-1"></i>Copiar
-          </button>
           <button type="button" class="btn btn-secondary" @click="cerrar">Cerrar</button>
         </div>
       </div>
@@ -41,7 +38,7 @@
 import { ref, watch } from 'vue';
 import { Modal } from 'bootstrap';
 import type { Contrato } from '@/types/contrato';
-import { sugerenciaTituloRedes } from '@/utils/contratoFormatters';
+import { sugerenciaTituloVideo, sugerenciaDescripcionVideo } from '@/utils/contratoFormatters';
 
 const props = defineProps<{
   /** Si es distinto de null, el modal se muestra. */
@@ -79,9 +76,15 @@ function cerrar() {
   emit('cerrar');
 }
 
-function copiarSugerencia(c: Contrato) {
-  const texto = sugerenciaTituloRedes(c);
+function copiarTitulo(c: Contrato) {
+  const texto = sugerenciaTituloVideo(c);
   if (!texto) return;
-  navigator.clipboard?.writeText(texto).catch(() => {});
+  navigator.clipboard?.writeText(texto).catch(() => { });
+}
+
+function copiarDescripcion(c: Contrato) {
+  const texto = sugerenciaDescripcionVideo(c);
+  if (!texto) return;
+  navigator.clipboard?.writeText(texto).catch(() => { });
 }
 </script>
