@@ -4,6 +4,7 @@ import Login from '@/pages/Login.vue';
 import Contratos from '@/pages/Contratos.vue';
 import Cotizar from '@/pages/Cotizar.vue';
 import CotizarAdmin from '@/pages/CotizarAdmin.vue';
+import Tutoriales from '@/pages/Tutoriales.vue';
 import { useAuth } from '@/composables/useAuth';
 
 const routes = [
@@ -33,6 +34,12 @@ const routes = [
     path: '/cotizar-admin',
     name: 'CotizarAdmin',
     component: CotizarAdmin
+  },
+  {
+    path: '/tutoriales',
+    name: 'Tutoriales',
+    component: Tutoriales,
+    meta: { requiresAuth: true }
   }
 ];
 

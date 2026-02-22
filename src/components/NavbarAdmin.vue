@@ -14,13 +14,16 @@
             <router-link to="/" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-house me-1"></i>Inicio</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link nav-pegaso-link" href="#" @click.prevent="openEditarPerfil"><i class="fa-solid fa-user me-1"></i>Editar perfil</a>
-          </li>
-          <li class="nav-item">
             <router-link to="/contratos" class="nav-link nav-pegaso-link"><i class="fa-solid fa-file-alt me-1"></i>Contratos</router-link>
           </li>
           <li class="nav-item">
             <router-link to="/cotizar-admin" class="nav-link nav-pegaso-link"><i class="fa-solid fa-calculator me-1"></i>Cotizar</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/tutoriales" class="nav-link nav-pegaso-link"><i class="fa-solid fa-book-open me-1"></i>Tutoriales</router-link>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-pegaso-link" href="#" @click.prevent="openEditarPerfil"><i class="fa-solid fa-user me-1"></i>Editar perfil</a>
           </li>
           <li class="nav-item">
             <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleLogout"><i class="fa-solid fa-sign-out-alt me-1"></i>Cerrar Sesión</a>
