@@ -155,7 +155,6 @@ import { TIPOS_EVENTO } from '@/data/tiposEvento';
 import { PAQUETES, PAQUETE_SOLO_TRANSMISION, PAQUETE_SOLO_GRABACION, PAQUETE_AMBOS, PAQUETE_DESCRIPCIONES, TEXTO_DIAS_GRABACION } from '@/data/paquetes';
 import { getWhatsAppCotizacionUrl } from '@/utils/whatsappService';
 import { calcularPrecioEstimado } from '@/utils/cotizacionUtils';
-import Navbar from '@/components/Navbar.vue';
 
 const formData = reactive({
   tipo_evento: '',
