@@ -105,6 +105,37 @@ export function formatPadrinosForDisplay(json: string | null): string[] {
   );
 }
 
+/**
+ * Genera una sugerencia de título para redes sociales a partir del contrato:
+ * "Tipo de evento de Festejado - Lugar" + padrinos si existen + hashtags.
+ */
+export function sugerenciaTituloRedes(c: Contrato | null): string {
+  if (!c) return '';
+  const tipo = (c.tipo_evento || '').trim() || 'Evento';
+  const festejado = (c.festejado || '').trim();
+  const lugar = (c.lugar || '').trim();
+  const partes: string[] = [];
+  partes.push(tipo + (festejado ? ' de ' + festejado : '') + (lugar ? ' - ' + lugar : ''));
+  const padrinos = parsePadrinos(c.padrinos);
+  if (padrinos.length > 0) {
+    const txtPadrinos = padrinos
+      .map((p) => (p.deQue ? `${p.deQue}: ${p.nombre}` : p.nombre).trim())
+      .filter(Boolean)
+      .join(', ');
+    if (txtPadrinos) partes.push('Padrinos: ' + txtPadrinos);
+  }
+  const hashtags: string[] = [];
+  const tipoTag = tipo.replace(/\s+/g, '');
+  if (tipoTag) hashtags.push('#' + tipoTag);
+  if (lugar) {
+    const lugarTag = lugar.split(',')[0].trim().replace(/\s+/g, '');
+    if (lugarTag) hashtags.push('#' + lugarTag);
+  }
+  hashtags.push('#PegasoFilms');
+  partes.push(hashtags.join(' '));
+  return partes.join('\n').toUpperCase();
+}
+
 /** Convierte un contrato en una versión para vista con textos en mayúsculas */
 export function contratoToDisplayUpper(c: Contrato | null): Contrato | null {
   if (!c) return null;

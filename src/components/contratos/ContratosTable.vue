@@ -54,55 +54,43 @@
       <p class="text-muted">{{ mensajeSinContratos }}</p>
     </div>
 
-    <div v-else class="table-responsive">
-      <table class="table table-hover table-bordered bg-white align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Tipo evento</th>
-            <th>Fecha</th>
-            <th>Lugar</th>
-            <th>Contratante</th>
-            <th>Estado</th>
-            <th class="text-end" style="width: 180px;">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="c in contratosOrdenados" :key="c.id">
-            <td>{{ c.tipo_evento }}</td>
-            <td>{{ formatDate(c.fecha_evento) }}</td>
-            <td>{{ c.lugar || '—' }}</td>
-            <td>{{ c.contratante || '—' }}</td>
-            <td><span :class="getEstadoBadgeClass(c.estado)">{{ formatEstado(c.estado) }}</span></td>
-            <td class="d-flex justify-content-end align-items-center gap-1">
-              <button type="button" class="btn btn-sm btn-outline-info me-1" @click="$emit('ver', c)" title="Ver">
-                <i class="fa-solid fa-eye"></i>
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-primary me-1" @click="$emit('editar', c)" title="Editar">
-                <i class="fa-solid fa-pen"></i>
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-danger" @click="$emit('eliminar', c)" title="Eliminar">
-                <i class="fa-solid fa-trash"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <template v-else>
+      <!-- Vista tabla: desktop (md y superior) -->
+      <div class="d-none d-md-block">
+        <ContratosTableDesktop
+          :contratos="contratosOrdenados"
+          @ver="$emit('ver', $event)"
+          @editar="$emit('editar', $event)"
+          @eliminar="$emit('eliminar', $event)"
+          @sugerencia="abrirModalSugerencia"
+        />
+      </div>
+
+      <!-- Vista cards: móvil (hasta md) -->
+      <div class="d-md-none">
+        <ContratosTableMobile
+          :contratos="contratosOrdenados"
+          @ver="$emit('ver', $event)"
+          @editar="$emit('editar', $event)"
+          @eliminar="$emit('eliminar', $event)"
+          @sugerencia="abrirModalSugerencia"
+        />
+      </div>
+    </template>
+
+    <ContratosSugerenciaModal
+      :contrato="contratoSugerencia"
+      @cerrar="cerrarModalSugerencia"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import type { Contrato } from '@/types/contrato';
-import { formatDate, formatEstado, getEstadoBadgeClass } from '@/utils/contratoFormatters';
-
-const props = defineProps<{
-  contratos: Contrato[];
-  loading: boolean;
-  errorMessage: string;
-  filtroAnio: string;
-  filtroMes: string;
-}>();
+import ContratosTableDesktop from './ContratosTableDesktop.vue';
+import ContratosTableMobile from './ContratosTableMobile.vue';
+import ContratosSugerenciaModal from './ContratosSugerenciaModal.vue';
 
 const MESES = [
   { value: '01', nombre: 'Enero' },
@@ -116,8 +104,28 @@ const MESES = [
   { value: '09', nombre: 'Septiembre' },
   { value: '10', nombre: 'Octubre' },
   { value: '11', nombre: 'Noviembre' },
-  { value: '12', nombre: 'Diciembre' }
+  { value: '12', nombre: 'Diciembre' },
 ];
+
+const props = defineProps<{
+  contratos: Contrato[];
+  loading: boolean;
+  errorMessage: string;
+  filtroAnio: string;
+  filtroMes: string;
+}>();
+
+const emit = defineEmits<{
+  (e: 'update:filtro-anio', value: string): void;
+  (e: 'update:filtro-mes', value: string): void;
+  (e: 'clearFiltros'): void;
+  (e: 'verMesActual'): void;
+  (e: 'nuevo'): void;
+  (e: 'actualizar'): void;
+  (e: 'ver', c: Contrato): void;
+  (e: 'editar', c: Contrato): void;
+  (e: 'eliminar', c: Contrato): void;
+}>();
 
 const meses = MESES;
 
@@ -148,25 +156,18 @@ const contratosOrdenados = computed(() => {
   });
 });
 
-const emit = defineEmits<{
-  (e: 'update:filtro-anio', value: string): void;
-  (e: 'update:filtro-mes', value: string): void;
-  (e: 'clearFiltros'): void;
-  (e: 'verMesActual'): void;
-  (e: 'nuevo'): void;
-  (e: 'actualizar'): void;
-  (e: 'ver', c: Contrato): void;
-  (e: 'editar', c: Contrato): void;
-  (e: 'eliminar', c: Contrato): void;
-}>();
+const contratoSugerencia = ref<Contrato | null>(null);
 
 function onToggleVer() {
   if (props.filtroAnio) emit('clearFiltros');
   else emit('verMesActual');
 }
-</script>
 
-<style scoped>
-.table th { font-weight: 600; }
-.badge { font-size: 0.75rem; }
-</style>
+function abrirModalSugerencia(c: Contrato) {
+  contratoSugerencia.value = c;
+}
+
+function cerrarModalSugerencia() {
+  contratoSugerencia.value = null;
+}
+</script>
