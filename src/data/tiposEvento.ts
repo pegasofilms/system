@@ -42,6 +42,18 @@ export const OTRO_SERVICIO = 'Otro servicio';
 export type TipoEvento = (typeof TIPOS_EVENTO)[number];
 
 /**
+ * Servicios cuando el tipo de evento es "Otro servicio".
+ * precio undefined = sin estimado (ej. Asistencia técnica).
+ */
+export const SERVICIOS_OTRO: { nombre: string; precio?: number }[] = [
+  { nombre: 'Spots publicitario', precio: 500 },
+  { nombre: 'Anuncios en nuestras plataformas', precio: 400 },
+  { nombre: 'Flayers', precio: 400 },
+  { nombre: 'Diseño de logos', precio: 800 },
+  { nombre: 'Asistencia técnica' }
+];
+
+/**
  * Hashtags sugeridos por tipo de evento para redes sociales.
  * Cada tipo tiene varios # que pueden hacerse variables/editables.
  * Actualizado para asegurar que todos los tipos listados en TIPOS_EVENTO tengan su propio array de hashtags.

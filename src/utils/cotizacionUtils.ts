@@ -5,6 +5,7 @@
  */
 
 import { PAQUETE_SOLO_GRABACION, PAQUETE_AMBOS, PAQUETE_SOLO_TRANSMISION } from '@/data/paquetes';
+import { BAILE, JARIPEO, OTRO_SERVICIO, SERVICIOS_OTRO, VIDEOCLIP, VIDEOS_COMERCIALES } from '@/data/tiposEvento';
 
 /** Datos del formulario de cotización (se puede extender con más campos). */
 export interface DatosCotizacion {
@@ -66,16 +67,14 @@ export function getViatico(lugar: string): number {
 }
 
 /**
- * Precios para tipo de evento "Otro" (servicio|precio en option value; vacío = sin estimado).
- * Extender este objeto al agregar nuevos servicios.
+ * Precios para tipo de evento "Otro" (clave = valor del select "nombre|precio").
+ * Derivado de SERVICIOS_OTRO; solo incluye servicios con precio.
  */
-export const PRECIOS_OTRO: Record<string, number> = {
-  'Spots publicitario|600': 600,
-  'Anuncios en nuestras plataformas|500': 500,
-  'Videos comerciales|1600': 1600,
-  'Flayers|400': 400,
-  'Diseño de logos|850': 850
-};
+export const PRECIOS_OTRO: Record<string, number> = Object.fromEntries(
+  SERVICIOS_OTRO
+    .filter((s): s is { nombre: string; precio: number } => s.precio != null)
+    .map((s) => [`${s.nombre}|${s.precio}`, s.precio])
+);
 
 /** Grabación: 1h fijo; 2h y 3h $/h; 4–5h, 6–7h, 8+h mismas escalas que en vivo. */
 export const TARIFA_GRABACION_1H = 1000;
@@ -122,14 +121,20 @@ export function calcularPrecioEstimado(datos: DatosCotizacion): ResultadoCotizac
   const tipo = (datos.tipo_evento || '').trim();
   const viatico = getViatico(datos.lugar || '');
 
-  if (tipo === 'Videoclip' || tipo === 'Videos comerciales') {
+  if (tipo === VIDEOCLIP || tipo === VIDEOS_COMERCIALES) {
     total = PRECIO_VIDEOCLIP_COMERCIALES + viatico;
     desglose.push(`${tipo}: $3,000`);
     if (viatico > 0) desglose.push(`Viático (${datos.lugar}): $${viatico}`);
+    const esClienteRecurrenteV = (datos.cliente_recurrente || '').toLowerCase() === 'si';
+    if (esClienteRecurrenteV && total > 0) {
+      const descuento = Math.round(total * 0.1);
+      total -= descuento;
+      desglose.push(`Descuento cliente recurrente (10%): -$${descuento.toLocaleString('es-MX')}`);
+    }
     return { total, desglose };
   }
 
-  if (tipo === 'Otro') {
+  if (tipo === OTRO_SERVICIO) {
     const sel = datos.otro_servicio || '';
     if (!sel) return { total: 0, desglose: [] };
     const precio = PRECIOS_OTRO[sel];
@@ -139,12 +144,19 @@ export function calcularPrecioEstimado(datos: DatosCotizacion): ResultadoCotizac
       desglose.push(`${nombreServicio}: $${precio.toLocaleString('es-MX')}`);
     } else {
       desglose.push(`${nombreServicio}: Consultar (sin estimado)`);
+      return { total: 0, desglose };
+    }
+    const esClienteRecurrenteO = (datos.cliente_recurrente || '').toLowerCase() === 'si';
+    if (esClienteRecurrenteO && total > 0) {
+      const descuento = Math.round(total * 0.1);
+      total -= descuento;
+      desglose.push(`Descuento cliente recurrente (10%): -$${descuento.toLocaleString('es-MX')}`);
     }
     return { total, desglose };
   }
 
   const paquete = datos.paquete || '';
-  const esBaileOJaripeo = tipo === 'Baile' || tipo === 'Jaripeo';
+  const esBaileOJaripeo = tipo === BAILE || tipo === JARIPEO;
 
   let algunoMasDe4Horas = false;
 

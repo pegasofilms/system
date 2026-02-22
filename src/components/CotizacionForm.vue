@@ -25,7 +25,7 @@
                   </select>
                 </div>
 
-                <div v-if="formData.tipo_evento !== 'Otro'" class="mb-3">
+                <div v-if="formData.tipo_evento !== OTRO_SERVICIO" class="mb-3">
                   <label for="lugar" class="form-label fw-semibold">Municipio (Oaxaca) <span
                       class="text-danger">*</span></label>
                   <select class="form-select" id="lugar" v-model="formData.lugar" required
@@ -36,22 +36,20 @@
                 </div>
 
                 <!-- Videoclip / Videos comerciales: solo municipio (precio fijo $3000 + viático) -->
-                <template v-if="formData.tipo_evento === 'Videoclip' || formData.tipo_evento === 'Videos comerciales'">
+                <template v-if="formData.tipo_evento === VIDEOCLIP || formData.tipo_evento === VIDEOS_COMERCIALES">
                   <p class="small text-muted">{{ formData.tipo_evento }}: $3,000 MXN + viático según municipio.</p>
                 </template>
 
                 <!-- Otro: select de servicio -->
-                <div v-else-if="formData.tipo_evento === 'Otro'" class="mb-3">
+                <div v-else-if="formData.tipo_evento === OTRO_SERVICIO" class="mb-3">
                   <label for="otro_servicio" class="form-label fw-semibold">Servicio <span
                       class="text-danger">*</span></label>
                   <select class="form-select" id="otro_servicio" v-model="formData.otro_servicio" required>
                     <option value="">Selecciona un servicio</option>
-                    <option value="Spots publicitario|600">Spots publicitario — $600</option>
-                    <option value="Anuncios en nuestras plataformas|500">Anuncios en nuestras plataformas — $500
+                    <option v-for="s in SERVICIOS_OTRO" :key="s.nombre"
+                      :value="s.precio != null ? `${s.nombre}|${s.precio}` : `${s.nombre}|`">
+                      {{ s.precio != null ? `${s.nombre} — $${s.precio}` : `${s.nombre} (sin estimado)` }}
                     </option>
-                    <option value="Flayers|400">Flayers — $400</option>
-                    <option value="Diseño de logos|850">Diseño de logos — $850</option>
-                    <option value="Asistencia técnica|">Asistencia técnica (sin estimado)</option>
                   </select>
                 </div>
 
@@ -71,7 +69,7 @@
 
 
                 <div
-                  v-if="(formData.paquete === PAQUETE_SOLO_GRABACION || formData.paquete === PAQUETE_AMBOS) && formData.tipo_evento !== 'Videoclip' && formData.tipo_evento !== 'Videos comerciales' && formData.tipo_evento !== 'Otro'"
+                  v-if="(formData.paquete === PAQUETE_SOLO_GRABACION || formData.paquete === PAQUETE_AMBOS) && formData.tipo_evento !== VIDEOCLIP && formData.tipo_evento !== VIDEOS_COMERCIALES && formData.tipo_evento !== OTRO_SERVICIO"
                   class="mb-3">
                   <label for="horas_grabacion" class="form-label fw-semibold">Horas de grabación (estimadas) <span
                       class="text-danger">*</span></label>
@@ -84,7 +82,7 @@
                 </div>
 
                 <div
-                  v-if="(formData.paquete === PAQUETE_SOLO_TRANSMISION || formData.paquete === PAQUETE_AMBOS) && formData.tipo_evento !== 'Videoclip' && formData.tipo_evento !== 'Videos comerciales' && formData.tipo_evento !== 'Otro'"
+                  v-if="(formData.paquete === PAQUETE_SOLO_TRANSMISION || formData.paquete === PAQUETE_AMBOS) && formData.tipo_evento !== VIDEOCLIP && formData.tipo_evento !== VIDEOS_COMERCIALES && formData.tipo_evento !== OTRO_SERVICIO"
                   class="mb-3">
                   <label for="horas_envivo" class="form-label fw-semibold">Horas de transmisión en vivo <span
                       class="text-danger">*</span></label>
@@ -151,8 +149,9 @@
 import { ref, reactive, computed, onMounted } from 'vue';
 import Swal from 'sweetalert2';
 import { getMunicipiosOaxaca } from '@/data/municipiosOaxaca';
-import { TIPOS_EVENTO } from '@/data/tiposEvento';
+import { TIPOS_EVENTO, SERVICIOS_OTRO } from '@/data/tiposEvento';
 import { PAQUETES, PAQUETE_SOLO_TRANSMISION, PAQUETE_SOLO_GRABACION, PAQUETE_AMBOS, PAQUETE_DESCRIPCIONES, TEXTO_DIAS_GRABACION } from '@/data/paquetes';
+import { OTRO_SERVICIO, VIDEOCLIP, VIDEOS_COMERCIALES } from '@/data/tiposEvento';
 import { getWhatsAppCotizacionUrl } from '@/utils/whatsappService';
 import { calcularPrecioEstimado } from '@/utils/cotizacionUtils';
 
@@ -174,7 +173,7 @@ const errorMessage = ref('');
 
 /** Muestra el campo "días" cuando grabación o transmisión en vivo es más de 4 horas. */
 const mostrarDiasGrabacion = computed(() => {
-  if (formData.tipo_evento === 'Videoclip' || formData.tipo_evento === 'Videos comerciales' || formData.tipo_evento === 'Otro') return false;
+  if (formData.tipo_evento === VIDEOCLIP || formData.tipo_evento === VIDEOS_COMERCIALES || formData.tipo_evento === OTRO_SERVICIO) return false;
   const masDe4Grab = (formData.paquete === PAQUETE_SOLO_GRABACION || formData.paquete === PAQUETE_AMBOS) && (() => {
     const h = formData.horas_grabacion;
     if (!h) return false;
@@ -217,14 +216,14 @@ const handleSubmit = () => {
   }
 
   const precioParaWhatsApp = desglose.length > 0 ? `Total estimado: $${total.toLocaleString('es-MX')} MXN. ${desglose.join(' | ')}` : `Total estimado: $${total.toLocaleString('es-MX')} MXN`;
-  const esVideoclipOComercial = formData.tipo_evento === 'Videoclip' || formData.tipo_evento === 'Videos comerciales';
+  const esVideoclipOComercial = formData.tipo_evento === VIDEOCLIP || formData.tipo_evento === VIDEOS_COMERCIALES;
   const whatsAppUrl = getWhatsAppCotizacionUrl({
     tipo_evento: formData.tipo_evento,
-    lugar: formData.tipo_evento === 'Otro' ? undefined : formData.lugar,
+    lugar: formData.tipo_evento === OTRO_SERVICIO ? undefined : formData.lugar,
     paquete: esVideoclipOComercial ? undefined : formData.paquete,
     horas_grabacion: esVideoclipOComercial ? undefined : formData.horas_grabacion,
     horas_envivo: esVideoclipOComercial ? undefined : formData.horas_envivo,
-    otro_servicio: formData.tipo_evento === 'Otro' ? formData.otro_servicio : undefined,
+    otro_servicio: formData.tipo_evento === OTRO_SERVICIO ? formData.otro_servicio : undefined,
     precioEstimado: precioParaWhatsApp
   });
 
@@ -248,7 +247,7 @@ const handleSubmit = () => {
     showCancelButton: true,
     confirmButtonText: '<i class="fa-brands fa-whatsapp me-2"></i> Enviar por WhatsApp',
     cancelButtonText: 'Cerrar',
-    confirmButtonColor: '#25D366',
+    confirmButtonColor: '#198754',
     cancelButtonColor: '#6c757d'
   }).then((res) => {
     if (res.isConfirmed) {
