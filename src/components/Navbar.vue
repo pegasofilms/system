@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light py-3 bg-white navbar-pegaso shadow-sm">
+  <nav class="navbar navbar-expand-lg navbar-light py-3 bg-white navbar-pegaso shadow-sm fixed-top">
     <div class="container d-flex justify-content-between align-items-center">
       <router-link class="navbar-brand d-flex align-items-center" to="/" @click="goToHome">
         <img :src="logoPath" :alt="EMPRESA.nombre" width="40" height="40" class="d-inline-block align-text-top me-2">
@@ -24,6 +24,9 @@
           </li>
           <li class="nav-item">
             <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('contacto')"><i class="fa-solid fa-envelope me-1"></i>Contacto</a>
+          </li>
+          <li class="nav-item">
+            <router-link to="/cotizar" class="nav-link nav-pegaso-link"><i class="fa-solid fa-calculator me-1"></i>Cotizar</router-link>
           </li>
           <li class="nav-item">
             <router-link to="/login" class="nav-link nav-pegaso-link"><i class="fa-solid fa-right-to-bracket me-1"></i>Iniciar sesión</router-link>

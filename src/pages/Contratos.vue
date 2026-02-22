@@ -1,7 +1,7 @@
 <template>
   <div class="contratos-page">
     <NavbarAdmin />
-    <div class="container">
+    <div class="container my-2">
       <div class="row">
         <div class="col-12 d-flex align-items-center justify-content-between">
           <h1 class="h4 fw-bold mb-0 text-primary">Contratos</h1>
@@ -195,5 +195,6 @@ async function confirmDelete(c: Contrato) {
 .contratos-page {
   min-height: 100vh;
   background-color: #f8f9fa;
+  padding-top: 76px; /* Compensar navbar fijo */
 }
 </style>

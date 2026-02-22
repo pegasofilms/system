@@ -21,7 +21,8 @@ import ContactoFooter from '@/components/sections/ContactoFooter.vue';
 </script>
 
 <style scoped>
+/* Compensar altura del navbar fijo */
 .pegaso-films-page {
-  padding: 0;
+  padding-top: 76px;
 }
 </style>

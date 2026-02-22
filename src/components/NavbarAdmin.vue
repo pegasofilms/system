@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light py-3 bg-white navbar-pegaso shadow-sm">
+  <nav class="navbar navbar-expand-lg navbar-light py-3 bg-white navbar-pegaso shadow-sm fixed-top">
     <div class="container d-flex justify-content-between align-items-center">
       <router-link class="navbar-brand d-flex align-items-center" to="/" @click="toggleMenu">
         <img :src="logoPath" :alt="EMPRESA.nombre" width="40" height="40" class="d-inline-block align-text-top me-2">
@@ -11,10 +11,16 @@
       <div class="collapse navbar-collapse justify-content-end" :class="{ show: menuOpen }" id="navbarAdminMenu">
         <ul class="navbar-nav navbar-pegaso-nav ms-auto align-items-center">
           <li class="nav-item">
-            <router-link to="/" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-house me-1"></i>Regresar a la página principal</router-link>
+            <router-link to="/" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-house me-1"></i>Inicio</router-link>
           </li>
           <li class="nav-item">
             <a class="nav-link nav-pegaso-link" href="#" @click.prevent="openEditarPerfil"><i class="fa-solid fa-user me-1"></i>Editar perfil</a>
+          </li>
+          <li class="nav-item">
+            <router-link to="/contratos" class="nav-link nav-pegaso-link"><i class="fa-solid fa-file-alt me-1"></i>Contratos</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/cotizar-admin" class="nav-link nav-pegaso-link"><i class="fa-solid fa-calculator me-1"></i>Cotizar</router-link>
           </li>
           <li class="nav-item">
             <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleLogout"><i class="fa-solid fa-sign-out-alt me-1"></i>Cerrar Sesión</a>

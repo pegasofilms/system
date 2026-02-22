@@ -3,6 +3,7 @@ import Home from '@/pages/Home.vue';
 import Login from '@/pages/Login.vue';
 import Contratos from '@/pages/Contratos.vue';
 import Cotizar from '@/pages/Cotizar.vue';
+import CotizarAdmin from '@/pages/CotizarAdmin.vue';
 import { useAuth } from '@/composables/useAuth';
 
 const routes = [
@@ -27,6 +28,11 @@ const routes = [
     path: '/cotizar',
     name: 'Cotizar',
     component: Cotizar
+  },
+  {
+    path: '/cotizar-admin',
+    name: 'CotizarAdmin',
+    component: CotizarAdmin
   }
 ];
 

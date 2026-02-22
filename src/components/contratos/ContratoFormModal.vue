@@ -119,9 +119,7 @@
                   <label class="form-label">Paquete</label>
                   <select v-model="form.paquete" class="form-select">
                     <option value="">—</option>
-                    <option value="Solo transmisión">Solo transmisión</option>
-                    <option value="Solo grabación">Solo grabación</option>
-                    <option value="Ambos (Transmisión + Grabación)">Ambos</option>
+                    <option v-for="p in PAQUETES_CONTRATO" :key="p.value" :value="p.value">{{ p.label }}</option>
                   </select>
                 </div>
                 <div class="col-6">
@@ -197,6 +195,7 @@ import { ref, watch, reactive, computed } from 'vue';
 import { Modal } from 'bootstrap';
 import type { Contrato, ContratoFormPayload, PadrinoEntry, VideoEntry } from '@/types/contrato';
 import { TIPOS_EVENTO } from '@/data/tiposEvento';
+import { PAQUETES_CONTRATO } from '@/data/paquetes';
 import { parsePadrinos, parseVideosEnlaces } from '@/utils/contratoFormatters';
 
 const props = defineProps<{
@@ -212,7 +211,6 @@ const emit = defineEmits<{
 }>();
 
 const modalEl = ref<HTMLElement | null>(null);
-const formEl = ref<HTMLFormElement | null>(null);
 const nuevoVideoNombre = ref('');
 const nuevoVideoUrl = ref('');
 
