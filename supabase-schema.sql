@@ -38,6 +38,9 @@ CREATE TABLE IF NOT EXISTS public.contratos (
     -- Enlaces y entregas
     enlaces_videos TEXT, -- Enlaces de videos (separados por comas o JSON)
     memoria_entregada BOOLEAN DEFAULT false, -- Se entregó memoria USB
+    -- Detalle de cotización/servicio (JSON): paquete, horas grabación/transmisión, días grabación,
+    -- plataforma transmisión (facebook/youtube), subir video, modalidad (privado/público), entregar memoria
+    cotizacion TEXT, -- JSON, mismo formato que padrinos/enlaces_videos
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -179,6 +182,9 @@ FROM public.user u
 WHERE u.username = 'eugenia'
 LIMIT 1
 ON CONFLICT DO NOTHING;
+
+-- Para bases ya creadas sin la columna cotizacion, ejecutar:
+-- ALTER TABLE public.contratos ADD COLUMN IF NOT EXISTS cotizacion TEXT;
 
 -- ============================================
 -- COMENTARIOS Y NOTAS

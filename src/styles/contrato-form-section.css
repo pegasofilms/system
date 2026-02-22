@@ -1,0 +1,63 @@
+/**
+ * Estilos compartidos para las secciones del formulario de contrato
+ * (ContratoFormSection/*). Importado en main.ts.
+ */
+
+.contrato-form-section {
+  background: #f8f9fa;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  border: 2px solid #dee2e6;
+}
+
+.contrato-form-section-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #6c757d;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* Fecha y hora con icono (EventoSection) */
+.contrato-form-date-wrap,
+.contrato-form-time-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.contrato-form-input-icon {
+  position: absolute;
+  left: 0.75rem;
+  color: #6c757d;
+  font-size: 0.95rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.contrato-form-date,
+.contrato-form-time {
+  padding-left: 2.5rem;
+  font-size: 1rem;
+  min-height: 2.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+}
+
+.contrato-form-date:hover,
+.contrato-form-time:hover {
+  border-color: #86b7fe;
+}
+
+.contrato-form-date:focus,
+.contrato-form-time:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+  outline: 0;
+}

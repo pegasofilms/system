@@ -47,7 +47,8 @@ export async function createContrato(
       festejado: payload.festejado ?? null,
       enlaces_videos: payload.enlaces_videos ?? null,
       descripcion: payload.descripcion ?? null,
-      notas: payload.notas ?? null
+      notas: payload.notas ?? null,
+      cotizacion: payload.cotizacion ?? null
     })
     .select()
     .single();
@@ -85,7 +86,8 @@ export async function updateContrato(
       festejado: payload.festejado ?? null,
       enlaces_videos: payload.enlaces_videos ?? null,
       descripcion: payload.descripcion ?? null,
-      notas: payload.notas ?? null
+      notas: payload.notas ?? null,
+      cotizacion: payload.cotizacion ?? null
     })
     .eq('id', idNum)
     .select()

@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 import "@/style.css";
 import "@/styles/navbar.css";
 import "@/styles/modal-header.css";
+import "@/styles/contrato-form-section.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 
