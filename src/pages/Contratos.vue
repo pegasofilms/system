@@ -28,8 +28,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { useRouter, onBeforeRouteLeave } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 import Swal from 'sweetalert2';
 import type { Contrato } from '@/types/contrato';
@@ -40,6 +40,7 @@ import NavbarAdmin from '@/components/NavbarAdmin.vue';
 import ContratosTable from '@/components/contratos/ContratosTable.vue';
 import ContratoViewModal from '@/components/contratos/ContratoViewModal.vue';
 import ContratoFormModal from '@/components/contratos/ContratoFormModal.vue';
+import { limpiarBackdropModal } from '@/utils/modalCleanup';
 
 const router = useRouter();
 const { currentUser, isAuthenticated } = useAuth();
@@ -71,6 +72,21 @@ onMounted(() => {
     return;
   }
   loadContratos();
+});
+
+onBeforeRouteLeave((_to, _from, next) => {
+  if (showModalVer.value || showModalForm.value) {
+    showModalVer.value = false;
+    showModalForm.value = false;
+    limpiarBackdropModal();
+    next(false);
+  } else {
+    next();
+  }
+});
+
+onBeforeUnmount(() => {
+  limpiarBackdropModal();
 });
 
 function clearFiltros() {

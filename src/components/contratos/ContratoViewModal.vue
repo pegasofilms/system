@@ -176,8 +176,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onBeforeUnmount } from 'vue';
 import { Modal } from 'bootstrap';
+import { limpiarBackdropModal } from '@/utils/modalCleanup';
 import type { Contrato } from '@/types/contrato';
 import { useAuth } from '@/composables/useAuth';
 import {
@@ -241,13 +242,19 @@ watch(
     if (!modalEl.value) return;
     if (visible) {
       modalInstance?.dispose();
-      modalInstance = new Modal(modalEl.value);
+      modalInstance = new Modal(modalEl.value, { backdrop: 'static', keyboard: false });
       modalInstance.show();
     } else {
       modalInstance?.hide();
     }
   }
 );
+
+onBeforeUnmount(() => {
+  modalInstance?.dispose();
+  modalInstance = null;
+  limpiarBackdropModal();
+});
 
 function cerrar() {
   modalInstance?.hide();

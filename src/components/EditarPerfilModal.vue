@@ -58,8 +58,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, onBeforeUnmount } from 'vue';
 import { Modal } from 'bootstrap';
+import { limpiarBackdropModal } from '@/utils/modalCleanup';
 import Swal from 'sweetalert2';
 import { useAuth } from '@/composables/useAuth';
 import { supabase } from '@/utils/supabase';
@@ -107,7 +108,7 @@ watch(
       }
       errorMessage.value = '';
       modalInstance?.dispose();
-      modalInstance = new Modal(modalEl.value);
+      modalInstance = new Modal(modalEl.value, { backdrop: 'static', keyboard: false });
       modalInstance.show();
     } else {
       modalInstance?.hide();
@@ -119,6 +120,12 @@ watch(modalEl, (el) => {
   if (!el) return;
   el.addEventListener('hidden.bs.modal', () => emit('cerrar'));
 }, { flush: 'post' });
+
+onBeforeUnmount(() => {
+  modalInstance?.dispose();
+  modalInstance = null;
+  limpiarBackdropModal();
+});
 
 function cerrar() {
   modalInstance?.hide();

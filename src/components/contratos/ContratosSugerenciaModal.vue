@@ -38,8 +38,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onBeforeUnmount } from 'vue';
 import { Modal } from 'bootstrap';
+import { limpiarBackdropModal } from '@/utils/modalCleanup';
 import type { Contrato } from '@/types/contrato';
 import { sugerenciaTituloVideo, sugerenciaDescripcionVideo } from '@/utils/contratoFormatters';
 
@@ -61,7 +62,7 @@ watch(
     if (!modalEl.value) return;
     if (c) {
       modalInstance?.dispose();
-      modalInstance = new Modal(modalEl.value);
+      modalInstance = new Modal(modalEl.value, { backdrop: 'static', keyboard: false });
       modalInstance.show();
     } else {
       modalInstance?.hide();
@@ -72,6 +73,12 @@ watch(
 watch(modalEl, (el) => {
   if (!el) return;
   el.addEventListener('hidden.bs.modal', () => emit('cerrar'));
+}, { flush: 'post' });
+
+onBeforeUnmount(() => {
+  modalInstance?.dispose();
+  modalInstance = null;
+  limpiarBackdropModal();
 });
 
 function cerrar() {

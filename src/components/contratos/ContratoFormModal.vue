@@ -38,8 +38,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, reactive, computed } from 'vue';
+import { ref, watch, reactive, computed, onBeforeUnmount } from 'vue';
 import { Modal } from 'bootstrap';
+import { limpiarBackdropModal } from '@/utils/modalCleanup';
 import type { Contrato, ContratoFormPayload, PadrinoEntry, VideoEntry, CotizacionData } from '@/types/contrato';
 import { parsePadrinos, parseVideosEnlaces } from '@/utils/contratoFormatters';
 import {
@@ -201,13 +202,19 @@ watch(
         resetForm();
       }
       modalInstance?.dispose();
-      modalInstance = new Modal(modalEl.value);
+      modalInstance = new Modal(modalEl.value, { backdrop: 'static', keyboard: false });
       modalInstance.show();
     } else {
       modalInstance?.hide();
     }
   }
 );
+
+onBeforeUnmount(() => {
+  modalInstance?.dispose();
+  modalInstance = null;
+  limpiarBackdropModal();
+});
 
 function agregarPadrino() {
   form.padrinosLista.push({ deQue: '', nombre: '' });
