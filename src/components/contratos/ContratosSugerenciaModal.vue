@@ -1,10 +1,13 @@
 <template>
   <div ref="modalEl" class="modal fade" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Sugerencia de publicación</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" @click="cerrar"></button>
+      <div class="modal-content modal-pegaso">
+        <div class="modal-header modal-header-pegaso">
+          <div class="d-flex align-items-center gap-2 w-100">
+            <span class="modal-header-pegaso-icon"><i class="fa-solid fa-bullhorn"></i></span>
+            <h5 class="modal-title mb-0">Sugerencia de publicación</h5>
+            <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Cerrar" @click="cerrar"></button>
+          </div>
         </div>
         <div class="modal-body">
           <label class="form-label small fw-semibold text-muted">Título (evento, festejado y lugar)</label>

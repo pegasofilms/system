@@ -1,10 +1,10 @@
 <template>
   <div ref="modalEl" class="modal fade" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
-      <div class="modal-content contrato-form-modal">
-        <div class="modal-header contrato-form-header">
+      <div class="modal-content modal-pegaso">
+        <div class="modal-header modal-header-pegaso">
           <div class="d-flex align-items-center gap-2 w-100">
-            <span class="contrato-form-icon">
+            <span class="modal-header-pegaso-icon">
               <i class="fa-solid fa-pen-to-square"></i>
             </span>
             <h5 class="modal-title mb-0">
@@ -385,36 +385,6 @@ function submit() {
 </script>
 
 <style scoped>
-.contrato-form-modal {
-  border: none;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15);
-}
-
-.contrato-form-header {
-  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
-  color: #fff;
-  padding: 1rem 1.25rem;
-  border-bottom: none;
-}
-
-.contrato-form-icon {
-  width: 2.5rem;
-  height: 2.5rem;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 0.5rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-}
-
-.contrato-form-header .modal-title {
-  font-size: 1.15rem;
-  font-weight: 600;
-}
-
 .contrato-form-section {
   background: #f8f9fa;
   border-radius: 0.5rem;

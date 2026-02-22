@@ -29,7 +29,8 @@
             <router-link to="/cotizar" class="nav-link nav-pegaso-link"><i class="fa-solid fa-calculator me-1"></i>Cotizar</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/login" class="nav-link nav-pegaso-link"><i class="fa-solid fa-right-to-bracket me-1"></i>Iniciar sesión</router-link>
+            <router-link v-if="currentUser" to="/contratos" class="nav-link nav-pegaso-link"><i class="fa-solid fa-screwdriver-wrench me-1"></i>Sistema</router-link>
+            <router-link v-else to="/login" class="nav-link nav-pegaso-link"><i class="fa-solid fa-right-to-bracket me-1"></i>Iniciar sesión</router-link>
           </li>
         </ul>
       </div>
@@ -40,9 +41,11 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuth } from '@/composables/useAuth';
 import { EMPRESA } from '@/data/empresa';
 
 const router = useRouter();
+const { currentUser } = useAuth();
 const menuOpen = ref(false);
 const logoPath = `${import.meta.env.BASE_URL}img/logo.png`;
 

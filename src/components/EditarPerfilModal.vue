@@ -1,12 +1,14 @@
 <template>
+  <Teleport to="body">
   <div ref="modalEl" class="modal fade" tabindex="-1" aria-labelledby="editarPerfilTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editarPerfilTitle">
-            <i class="fa-solid fa-user-pen me-2"></i>Editar perfil
-          </h5>
-          <button type="button" class="btn-close" aria-label="Cerrar" @click="cerrar"></button>
+      <div class="modal-content modal-pegaso">
+        <div class="modal-header modal-header-pegaso">
+          <div class="d-flex align-items-center gap-2 w-100">
+            <span class="modal-header-pegaso-icon"><i class="fa-solid fa-user-pen"></i></span>
+            <h5 class="modal-title mb-0" id="editarPerfilTitle">Editar perfil</h5>
+            <button type="button" class="btn-close btn-close-white ms-auto" aria-label="Cerrar" @click="cerrar"></button>
+          </div>
         </div>
         <form @submit.prevent="guardar">
           <div class="modal-body">
@@ -52,6 +54,7 @@
       </div>
     </div>
   </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
