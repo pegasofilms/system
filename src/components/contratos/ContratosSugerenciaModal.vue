@@ -6,28 +6,34 @@
           <div class="d-flex align-items-center gap-2 w-100">
             <span class="modal-header-pegaso-icon"><i class="fa-solid fa-bullhorn"></i></span>
             <h5 class="modal-title mb-0">Sugerencia de publicación</h5>
-            <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Cerrar" @click="cerrar"></button>
+            <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Cerrar"
+              @click="cerrar"></button>
           </div>
         </div>
         <div class="modal-body">
-          <label class="form-label small fw-semibold text-muted">Título (evento, festejado y lugar)</label>
-          <textarea :value="contrato ? sugerenciaTituloVideo(contrato) : ''" class="form-control font-monospace mb-3"
-            readonly rows="2"></textarea>
-          <div class="d-flex justify-content-end mb-2">
-            <button type="button" class="btn btn-sm btn-outline-primary" :disabled="!contrato" title="Copiar título"
+
+          <div class="mb-2 d-flex align-items-end justify-content-between">
+            <label class=" fw-semibold text-muted">Título: </label>
+            <button type="button" class="btn btn-sm btn-outline-secondary" :disabled="!contrato" title="Copiar título"
               @click="contrato && copiarTitulo(contrato)">
               <i class="fa-solid fa-copy me-1"></i>Copiar
             </button>
           </div>
-          <label class="form-label small fw-semibold text-muted">Descripción (padrinos, # y más)</label>
-          <textarea :value="contrato ? sugerenciaDescripcionVideo(contrato) : ''"
-            class="form-control font-monospace mb-2" readonly rows="6"></textarea>
-          <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-sm btn-outline-primary" :disabled="!contrato"
+
+          <textarea :value="contrato ? sugerenciaTituloVideo(contrato) : ''" class="form-control font-monospace mb-3"
+            readonly rows="2"></textarea>
+
+            <div class="mb-2 d-flex align-items-end justify-content-between">
+              <label class=" fw-semibold text-muted">Descripción: </label>
+            <button type="button" class="btn btn-sm btn-outline-secondary" :disabled="!contrato"
               title="Copiar descripción" @click="contrato && copiarDescripcion(contrato)">
               <i class="fa-solid fa-copy me-1"></i>Copiar
             </button>
           </div>
+
+          <textarea :value="contrato ? sugerenciaDescripcionVideo(contrato) : ''"
+            class="form-control font-monospace mb-2" readonly rows="6"></textarea>
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" @click="cerrar">Cerrar</button>

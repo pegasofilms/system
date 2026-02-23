@@ -99,10 +99,11 @@ const handleLogin = async () => {
   loading.value = true;
 
   try {
+    const usernameTrimmed = formData.email.trim();
     const { data, error: supabaseError } = await supabase
       .from('user')
       .select('id, username, password, email, nombre_completo, telefono')
-      .eq('username', formData.email)
+      .eq('username', usernameTrimmed)
       .eq('password', formData.password)
       .maybeSingle();
 
