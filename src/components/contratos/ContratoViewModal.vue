@@ -153,7 +153,7 @@
                   :title="puedeReenviarWhatsApp ? 'Abre WhatsApp enviando el mensaje de entrega a tu propio número' : 'Necesitas tener un teléfono en tu cuenta y al menos un enlace de video'"
                   @click="reenviarAMiWhatsApp">
                   <i class="fa-brands fa-whatsapp me-1"></i>
-                  Mi número
+                  Mio
                 </button>
               </div>
             </div>
