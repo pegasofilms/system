@@ -167,9 +167,11 @@ import { OTRO_SERVICIO, VIDEOCLIP, VIDEOS_COMERCIALES } from '@/data/tiposEvento
 import { getWhatsAppCotizacionUrl } from '@/utils/whatsappService';
 import { calcularPrecioEstimado } from '@/utils/cotizacionUtils';
 import { useAuth } from '@/composables/useAuth';
+import { useRouter } from 'vue-router';
 
 const { isAuthenticated } = useAuth();
 const isAdmin = computed(() => isAuthenticated.value);
+const router = useRouter();
 
 const formData = reactive({
   tipo_evento: '',
@@ -292,6 +294,11 @@ const handleSubmit = () => {
     ? '<i class="fa-brands fa-whatsapp me-2"></i> Enviar al cliente'
     : '<i class="fa-brands fa-whatsapp me-2"></i> Enviar por WhatsApp';
 
+  // Botón para crear contrato (solo para admin)
+  const botonCrearContrato = isAdmin.value 
+    ? '<button id="btn-crear-contrato" class="btn btn-success mt-2 w-100"><i class="fa-solid fa-file-contract me-2"></i> Crear contrato con estos datos</button>'
+    : '';
+
   Swal.fire({
     icon: undefined,
     showClass: { popup: 'swal2-show' },
@@ -301,6 +308,7 @@ const handleSubmit = () => {
         ${desgloseHtml}
         <p class="mb-2 fs-4 fw-bold text-primary">$${total.toLocaleString('es-MX')} MXN</p>
         <p class="small text-muted mb-0">${textoModal}</p>
+        ${botonCrearContrato}
       </div>
     `,
     showCancelButton: true,
@@ -308,7 +316,16 @@ const handleSubmit = () => {
     cancelButtonText: 'Cerrar',
     confirmButtonColor: telefonoValido || !isAdmin.value ? '#198754' : '#6c757d',
     cancelButtonColor: '#6c757d',
-    allowOutsideClick: true
+    allowOutsideClick: true,
+    didOpen: () => {
+      const btnCrear = document.getElementById('btn-crear-contrato');
+      if (btnCrear) {
+        btnCrear.addEventListener('click', () => {
+          Swal.close();
+          crearContratoDesdeCotizacion(total);
+        });
+      }
+    }
   }).then((res) => {
     if (res.isConfirmed && (telefonoValido || !isAdmin.value)) {
       window.open(whatsAppUrl, '_blank', 'noopener,noreferrer');
@@ -327,6 +344,30 @@ const handleSubmit = () => {
     }, 100);
   }
 };
+
+function crearContratoDesdeCotizacion(precioTotal: number) {
+  // Construir query params con los datos de la cotización
+  const params = new URLSearchParams();
+  
+  if (formData.tipo_evento) params.set('tipo_evento', formData.tipo_evento);
+  if (formData.lugar) params.set('lugar', formData.lugar);
+  if (formData.paquete) params.set('paquete', formData.paquete);
+  if (formData.horas_grabacion) params.set('horas_grabacion', formData.horas_grabacion);
+  if (formData.horas_envivo) params.set('horas_envivo', formData.horas_envivo);
+  if (formData.dias_grabacion) params.set('dias_grabacion', formData.dias_grabacion);
+  if (formData.otro_servicio) params.set('otro_servicio', formData.otro_servicio);
+  if (formData.telefono_cliente) {
+    const telefono = formData.telefono_cliente.replace(/\D/g, '');
+    if (telefono.length === 10) {
+      params.set('telefono', telefono);
+    }
+  }
+  if (precioTotal > 0) params.set('precio', precioTotal.toString());
+  params.set('desde_cotizacion', 'true');
+  
+  // Navegar a contratos con los datos en query params
+  router.push({ path: '/contratos', query: Object.fromEntries(params) });
+}
 </script>
 
 <style scoped>

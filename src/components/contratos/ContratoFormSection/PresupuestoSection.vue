@@ -32,9 +32,37 @@
 </template>
 
 <script setup lang="ts">
+import { watch } from 'vue';
 import type { ContratoFormState } from '@/types/contrato';
 
-defineProps<{
+const props = defineProps<{
   form: ContratoFormState;
 }>();
+
+// Si el anticipo es mayor a 0, cambiar automáticamente el estado a "confirmado"
+// Si el anticipo es 0 o se borra, cambiar automáticamente el estado a "pendiente"
+watch(
+  () => props.form.anticipo,
+  (nuevoAnticipo) => {
+    if (nuevoAnticipo != null && nuevoAnticipo > 0) {
+      props.form.estado = 'confirmado';
+    } else {
+      // Si el anticipo es 0, null o se borra, volver a "pendiente"
+      props.form.estado = 'pendiente';
+    }
+  }
+);
+
+// Si el estado cambia a "pendiente", establecer el anticipo en 0
+watch(
+  () => props.form.estado,
+  (nuevoEstado) => {
+    if (nuevoEstado === 'pendiente') {
+      // Solo cambiar si el anticipo no es ya 0 o null
+      if (props.form.anticipo != null && props.form.anticipo > 0) {
+        props.form.anticipo = 0;
+      }
+    }
+  }
+);
 </script>

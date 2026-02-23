@@ -23,13 +23,13 @@
       @editar="cerrarVerYAbrirEditar" />
 
     <ContratoFormModal :show="showModalForm" :es-edicion="esEdicion" :contrato="contratoAEditar" :saving="saving"
-      @cerrar="cerrarForm" @submit="onFormSubmit" />
+      :datos-iniciales="datosInicialesDesdeCotizacion" @cerrar="cerrarForm" @submit="onFormSubmit" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
-import { useRouter, onBeforeRouteLeave } from 'vue-router';
+import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 import Swal from 'sweetalert2';
 import type { Contrato } from '@/types/contrato';
@@ -43,6 +43,7 @@ import ContratoFormModal from '@/components/contratos/ContratoFormModal.vue';
 import { limpiarBackdropModal } from '@/utils/modalCleanup';
 
 const router = useRouter();
+const route = useRoute();
 const { currentUser, isAuthenticated } = useAuth();
 
 const contratos = ref<Contrato[]>([]);
@@ -56,6 +57,17 @@ const contratoSeleccionado = ref<Contrato | null>(null);
 const contratoAEditar = ref<Contrato | null>(null);
 const esEdicion = ref(false);
 const saving = ref(false);
+const datosInicialesDesdeCotizacion = ref<{
+  tipo_evento?: string;
+  lugar?: string;
+  paquete?: string;
+  horas_grabacion?: string | number;
+  horas_envivo?: string | number;
+  dias_grabacion?: string | number;
+  otro_servicio?: string;
+  telefono?: string;
+  precio?: number;
+} | null>(null);
 
 const contratosFiltrados = computed(() => {
   const list = contratos.value;
@@ -72,6 +84,35 @@ onMounted(() => {
     return;
   }
   loadContratos();
+  
+  // Verificar si hay datos de cotización en query params
+  if (route.query.desde_cotizacion === 'true') {
+    const datos: typeof datosInicialesDesdeCotizacion.value = {};
+    
+    if (route.query.tipo_evento) datos.tipo_evento = String(route.query.tipo_evento);
+    if (route.query.lugar) datos.lugar = String(route.query.lugar);
+    if (route.query.paquete) datos.paquete = String(route.query.paquete);
+    if (route.query.horas_grabacion) {
+      const h = String(route.query.horas_grabacion);
+      datos.horas_grabacion = h === 'mas' ? 12 : parseInt(h, 10);
+    }
+    if (route.query.horas_envivo && route.query.horas_envivo !== '0') {
+      const h = String(route.query.horas_envivo);
+      datos.horas_envivo = h === 'mas' ? 12 : parseInt(h, 10);
+    }
+    if (route.query.dias_grabacion) {
+      datos.dias_grabacion = parseInt(String(route.query.dias_grabacion), 10);
+    }
+    if (route.query.otro_servicio) datos.otro_servicio = String(route.query.otro_servicio);
+    if (route.query.telefono) datos.telefono = String(route.query.telefono);
+    if (route.query.precio) datos.precio = parseFloat(String(route.query.precio));
+    
+    if (Object.keys(datos).length > 0) {
+      datosInicialesDesdeCotizacion.value = datos;
+      // Abrir el modal automáticamente
+      openCreate();
+    }
+  }
 });
 
 onBeforeRouteLeave((_to, _from, next) => {
@@ -142,6 +183,11 @@ function cerrarVerYAbrirEditar() {
 function cerrarForm() {
   showModalForm.value = false;
   contratoAEditar.value = null;
+  datosInicialesDesdeCotizacion.value = null;
+  // Limpiar query params si existen
+  if (route.query.desde_cotizacion) {
+    router.replace({ path: '/contratos', query: {} });
+  }
 }
 
 async function onFormSubmit(
@@ -179,6 +225,10 @@ async function onFormSubmit(
 
   cerrarForm();
   await loadContratos();
+  // Limpiar query params después de crear/actualizar
+  if (route.query.desde_cotizacion) {
+    router.replace({ path: '/contratos', query: {} });
+  }
 }
 
 async function confirmDelete(c: Contrato) {

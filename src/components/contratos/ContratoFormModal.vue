@@ -66,6 +66,17 @@ const props = defineProps<{
   esEdicion: boolean;
   contrato: Contrato | null;
   saving?: boolean;
+  datosIniciales?: {
+    tipo_evento?: string;
+    lugar?: string;
+    paquete?: string;
+    horas_grabacion?: string | number;
+    horas_envivo?: string | number;
+    dias_grabacion?: string | number;
+    otro_servicio?: string;
+    telefono?: string;
+    precio?: number;
+  } | null;
 }>();
 
 const emit = defineEmits<{
@@ -191,6 +202,42 @@ function loadContrato(c: Contrato) {
 
 let modalInstance: InstanceType<typeof Modal> | null = null;
 
+function loadDatosIniciales(datos: NonNullable<typeof props.datosIniciales>) {
+  if (datos.tipo_evento) form.tipo_evento = datos.tipo_evento;
+  if (datos.lugar) form.lugar = datos.lugar;
+  if (datos.paquete) form.paquete = datos.paquete;
+  if (datos.telefono) form.telefono = normalizarTelefono(datos.telefono);
+  if (datos.precio != null) form.precio = datos.precio;
+  
+  // Mapear datos de cotización
+  if (datos.horas_grabacion) {
+    const horas = typeof datos.horas_grabacion === 'string' 
+      ? (datos.horas_grabacion === 'mas' ? 12 : parseInt(datos.horas_grabacion, 10))
+      : datos.horas_grabacion;
+    if (!isNaN(horas) && horas > 0) {
+      form.cotizacion.horas_grabacion = horas;
+    }
+  }
+  
+  if (datos.horas_envivo && datos.horas_envivo !== '0') {
+    const horas = typeof datos.horas_envivo === 'string'
+      ? (datos.horas_envivo === 'mas' ? 12 : parseInt(datos.horas_envivo, 10))
+      : datos.horas_envivo;
+    if (!isNaN(horas) && horas > 0) {
+      form.cotizacion.horas_transmision = horas;
+    }
+  }
+  
+  if (datos.dias_grabacion) {
+    const dias = typeof datos.dias_grabacion === 'string'
+      ? parseInt(datos.dias_grabacion, 10)
+      : datos.dias_grabacion;
+    if (!isNaN(dias) && dias > 0) {
+      form.cotizacion.dias_grabacion = dias;
+    }
+  }
+}
+
 watch(
   () => props.show,
   (visible) => {
@@ -198,6 +245,9 @@ watch(
     if (visible) {
       if (props.esEdicion && props.contrato) {
         loadContrato(props.contrato);
+      } else if (props.datosIniciales) {
+        resetForm();
+        loadDatosIniciales(props.datosIniciales);
       } else {
         resetForm();
       }
