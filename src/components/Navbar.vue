@@ -10,28 +10,49 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end" :class="{ show: menuOpen }" id="navbarNav">
         <ul class="navbar-nav navbar-pegaso-nav ms-auto align-items-center">
-          <li class="nav-item">
-            <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('inicio')"><i class="fa-solid fa-house me-1"></i>Inicio</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('servicios')"><i class="fa-solid fa-gear me-1"></i>Servicios</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('como-trabajamos')"><i class="fa-solid fa-satellite-dish me-1"></i>Como trabajamos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('videos')"><i class="fa-solid fa-video me-1"></i>Videos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('contacto')"><i class="fa-solid fa-envelope me-1"></i>Contacto</a>
-          </li>
-          <li class="nav-item">
-            <router-link to="/cotizar" class="nav-link nav-pegaso-link"><i class="fa-solid fa-calculator me-1"></i>Cotizar</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link v-if="currentUser" to="/contratos" class="nav-link nav-pegaso-link"><i class="fa-solid fa-screwdriver-wrench me-1"></i>Sistema</router-link>
-            <router-link v-else to="/login" class="nav-link nav-pegaso-link"><i class="fa-solid fa-right-to-bracket me-1"></i>Iniciar sesión</router-link>
-          </li>
+          <!-- Menú para usuarios NO logueados -->
+          
+            <li class="nav-item">
+              <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('inicio')"><i class="fa-solid fa-house me-1"></i>Inicio</a>
+            </li>
+
+            <li class="nav-item" v-if="currentUser">
+              <router-link to="/editar-perfil" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-user me-1"></i>Editar perfil</router-link>
+            </li>
+            
+            <template v-if="!currentUser">
+              <li class="nav-item">
+                <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('servicios')"><i class="fa-solid fa-gear me-1"></i>Servicios</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('como-trabajamos')"><i class="fa-solid fa-satellite-dish me-1"></i>Como trabajamos</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('videos')"><i class="fa-solid fa-video me-1"></i>Videos</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('contacto')"><i class="fa-solid fa-envelope me-1"></i>Contacto</a>
+              </li>
+            </template>
+
+            <li class="nav-item">
+                <router-link to="/cotizar" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-calculator me-1"></i>Cotizar</router-link>
+            </li>
+
+            <li class="nav-item" v-if="currentUser">
+              <router-link to="/contratos" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-file-alt me-1"></i>Contratos</router-link>
+            </li>
+
+            <li class="nav-item" v-if="currentUser">
+              <router-link to="/tutoriales" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-book-open me-1"></i>Tutoriales</router-link>
+            </li>
+
+            <li class="nav-item" v-if="!currentUser">
+              <router-link to="/login" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-right-to-bracket me-1"></i>Iniciar sesión</router-link>
+            </li>
+            <li class="nav-item" v-else>
+              <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleLogout"><i class="fa-solid fa-sign-out-alt me-1"></i>Cerrar Sesión</a>
+            </li>
         </ul>
       </div>
     </div>
@@ -45,7 +66,7 @@ import { useAuth } from '@/composables/useAuth';
 import { EMPRESA } from '@/data/empresa';
 
 const router = useRouter();
-const { currentUser } = useAuth();
+const { currentUser, clearSession } = useAuth();
 const menuOpen = ref(false);
 const logoPath = `${import.meta.env.BASE_URL}img/logo.png`;
 
@@ -53,8 +74,12 @@ const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
 };
 
-const goToHome = () => {
+const closeMenu = () => {
   menuOpen.value = false;
+};
+
+const goToHome = () => {
+  closeMenu();
   if (router.currentRoute.value.path !== '/') {
     router.push('/');
   } else {
@@ -63,7 +88,7 @@ const goToHome = () => {
 };
 
 const handleNavClick = async (id: string) => {
-  menuOpen.value = false;
+  closeMenu();
   
   // Si no estamos en la página de inicio, navegar primero
   if (router.currentRoute.value.path !== '/') {
@@ -102,4 +127,10 @@ const scrollToSection = (id: string, retries = 5) => {
     console.warn(`No se pudo encontrar el elemento con id: ${id}`);
   }
 };
+
+function handleLogout() {
+  closeMenu();
+  clearSession();
+  router.push('/login');
+}
 </script>

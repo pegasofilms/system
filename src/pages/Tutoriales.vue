@@ -1,6 +1,6 @@
 <template>
   <div class="tutoriales-page">
-    <NavbarAdmin />
+    <Navbar />
     <div class="container py-4">
       <div class="d-flex align-items-center mb-4">
         <span class="tutoriales-icon me-3"><i class="fa-solid fa-book-open"></i></span>
@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import NavbarAdmin from '@/components/NavbarAdmin.vue';
+import Navbar from '@/components/Navbar.vue';
 import TutorialModal from '@/components/TutorialModal.vue';
 import { TUTORIALES, type TutorialItem } from '@/data/tutoriales';
 

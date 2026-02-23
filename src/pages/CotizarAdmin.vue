@@ -1,10 +1,10 @@
 <template>
-    <NavbarAdmin />
+    <Navbar />
     <CotizacionForm />
 </template>
 
 <script setup lang="ts">
-import NavbarAdmin from '@/components/NavbarAdmin.vue';
+import Navbar from '@/components/Navbar.vue';
 import CotizacionForm from '@/components/CotizacionForm.vue';
 </script>
 

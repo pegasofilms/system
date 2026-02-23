@@ -6,8 +6,10 @@
           <div class="shadow-lg border-0 rounded-2">
             <div class="card-header bg-primary text-center py-2">
               <h2 class="h3 fw-bold mb-0 text-primary">Cotizar</h2>
-              <p class="mb-0 mt-2 small opacity-75 text-primary">Elige tipo de evento, lugar y paquete. Te mostramos un
-                precio estimado.</p>
+              <p class="mb-0 mt-2 small opacity-75 text-primary">
+                <span v-if="isAdmin">Ingresa los datos del evento y el teléfono del cliente para generar la cotización.</span>
+                <span v-else>Elige tipo de evento, lugar y paquete. Te mostramos un precio estimado.</span>
+              </p>
             </div>
             <div class="card-body p-4 p-md-5">
               <form @submit.prevent="handleSubmit">
@@ -124,6 +126,16 @@
                   </div>
                 </div>
 
+                <div v-if="isAdmin" class="mb-3">
+                  <label for="telefono_cliente" class="form-label fw-semibold">Teléfono del cliente (opcional)</label>
+                  <input v-model="formData.telefono_cliente" type="tel" class="form-control" id="telefono_cliente"
+                    placeholder="10 dígitos (ej. 9541234567)" maxlength="10" inputmode="numeric" pattern="[0-9]*">
+                  <div class="form-text">Si ingresas un número, podrás enviar la cotización directamente por WhatsApp al cliente.</div>
+                  <div v-if="formData.telefono_cliente && formData.telefono_cliente.replace(/\D/g, '').length > 0 && formData.telefono_cliente.replace(/\D/g, '').length !== 10" class="form-text text-danger">
+                    El teléfono debe tener 10 dígitos.
+                  </div>
+                </div>
+
                 <div v-if="errorMessage" class="alert alert-danger" role="alert">
                   <i class="fa-solid fa-exclamation-triangle me-2"></i>
                   {{ errorMessage }}
@@ -132,7 +144,7 @@
                 <div class="d-grid gap-2 mt-4">
                   <button type="submit" class="btn btn-primary" :disabled="loading">
                     <i v-if="!loading" class="fa-solid fa-calculator me-2"></i>
-                    <span v-if="!loading">Ver precio estimado</span>
+                    <span v-if="!loading">{{ isAdmin ? 'Generar cotización' : 'Ver precio estimado' }}</span>
                     <span v-else>Calculando...</span>
                   </button>
                 </div>
@@ -154,6 +166,10 @@ import { PAQUETES, PAQUETE_SOLO_TRANSMISION, PAQUETE_SOLO_GRABACION, PAQUETE_AMB
 import { OTRO_SERVICIO, VIDEOCLIP, VIDEOS_COMERCIALES } from '@/data/tiposEvento';
 import { getWhatsAppCotizacionUrl } from '@/utils/whatsappService';
 import { calcularPrecioEstimado } from '@/utils/cotizacionUtils';
+import { useAuth } from '@/composables/useAuth';
+
+const { isAuthenticated } = useAuth();
+const isAdmin = computed(() => isAuthenticated.value);
 
 const formData = reactive({
   tipo_evento: '',
@@ -163,7 +179,8 @@ const formData = reactive({
   horas_envivo: '',
   otro_servicio: '',
   cliente_recurrente: '',
-  dias_grabacion: '1'
+  dias_grabacion: '1',
+  telefono_cliente: ''
 });
 
 const municipios = ref<string[]>([]);
@@ -203,6 +220,16 @@ const handleSubmit = () => {
   errorMessage.value = '';
   loading.value = true;
 
+  // Validar teléfono solo si se proporciona (no es obligatorio)
+  if (isAdmin.value && formData.telefono_cliente) {
+    const telefono = formData.telefono_cliente.replace(/\D/g, '');
+    if (telefono.length > 0 && telefono.length !== 10) {
+      errorMessage.value = 'El número de teléfono debe tener 10 dígitos.';
+      loading.value = false;
+      return;
+    }
+  }
+
   const resultado = calcularPrecioEstimado(formData);
   const { desglose, total } = resultado;
 
@@ -212,26 +239,58 @@ const handleSubmit = () => {
       title: 'Completa los datos',
       text: 'Selecciona tipo de evento, y según el paquete las horas de grabación o en vivo para ver el precio estimado.'
     });
+    loading.value = false;
     return;
   }
 
-  const precioParaWhatsApp = desglose.length > 0 ? `Total estimado: $${total.toLocaleString('es-MX')} MXN. ${desglose.join(' | ')}` : `Total estimado: $${total.toLocaleString('es-MX')} MXN`;
+  // Generar desglose enumerado para WhatsApp
+  const desgloseEnumerado = desglose.length > 0
+    ? desglose.map((item, index) => `${index + 1}. ${item}`).join('\n')
+    : '';
+  
+  const precioParaWhatsApp = desglose.length > 0
+    ? `${desgloseEnumerado}\n\n💰 Total estimado: $${total.toLocaleString('es-MX')} MXN`
+    : `💰 Total estimado: $${total.toLocaleString('es-MX')} MXN`;
+  
   const esVideoclipOComercial = formData.tipo_evento === VIDEOCLIP || formData.tipo_evento === VIDEOS_COMERCIALES;
-  const whatsAppUrl = getWhatsAppCotizacionUrl({
+  const telefonoDestino = isAdmin.value && formData.telefono_cliente ? formData.telefono_cliente.replace(/\D/g, '') : undefined;
+  const descripcionPaquete = !esVideoclipOComercial && formData.tipo_evento !== OTRO_SERVICIO && formData.paquete 
+    ? PAQUETE_DESCRIPCIONES[formData.paquete] 
+    : undefined;
+  const datosCotizacion: Parameters<typeof getWhatsAppCotizacionUrl>[0] = {
     tipo_evento: formData.tipo_evento,
     lugar: formData.tipo_evento === OTRO_SERVICIO ? undefined : formData.lugar,
     paquete: esVideoclipOComercial ? undefined : formData.paquete,
+    descripcionPaquete: descripcionPaquete,
     horas_grabacion: esVideoclipOComercial ? undefined : formData.horas_grabacion,
     horas_envivo: esVideoclipOComercial ? undefined : formData.horas_envivo,
     otro_servicio: formData.tipo_evento === OTRO_SERVICIO ? formData.otro_servicio : undefined,
-    precioEstimado: precioParaWhatsApp
-  });
+    precioEstimado: precioParaWhatsApp,
+    isAdmin: isAdmin.value
+  };
+  if (telefonoDestino) {
+    datosCotizacion.telefono = telefonoDestino;
+  }
+  const whatsAppUrl = getWhatsAppCotizacionUrl(datosCotizacion);
 
   loading.value = false;
 
   const desgloseHtml = desglose.length > 0
     ? `<ul class="text-start mb-3 ps-3">${desglose.map((d) => `<li class="mb-1">${d}</li>`).join('')}</ul>`
     : '';
+
+  // Verificar si hay un número de teléfono válido
+  const telefonoValido = isAdmin.value && telefonoDestino && telefonoDestino.length === 10;
+  
+  const textoModal = isAdmin.value 
+    ? (telefonoValido 
+        ? 'Precio estimado. Envía esta cotización al cliente por WhatsApp.'
+        : 'Precio estimado. Agrega un número de teléfono válido (10 dígitos) para enviar la cotización directamente.')
+    : 'Precio de referencia. Envíanos tu cotización por WhatsApp para confirmar el precio final.';
+  
+  const textoBoton = isAdmin.value 
+    ? '<i class="fa-brands fa-whatsapp me-2"></i> Enviar al cliente'
+    : '<i class="fa-brands fa-whatsapp me-2"></i> Enviar por WhatsApp';
 
   Swal.fire({
     icon: undefined,
@@ -241,19 +300,32 @@ const handleSubmit = () => {
       <div class="text-start">
         ${desgloseHtml}
         <p class="mb-2 fs-4 fw-bold text-primary">$${total.toLocaleString('es-MX')} MXN</p>
-        <p class="small text-muted mb-0">Precio de referencia. Envíanos tu cotización por WhatsApp para confirmar el precio final.</p>
+        <p class="small text-muted mb-0">${textoModal}</p>
       </div>
     `,
     showCancelButton: true,
-    confirmButtonText: '<i class="fa-brands fa-whatsapp me-2"></i> Enviar por WhatsApp',
+    confirmButtonText: textoBoton,
     cancelButtonText: 'Cerrar',
-    confirmButtonColor: '#198754',
-    cancelButtonColor: '#6c757d'
+    confirmButtonColor: telefonoValido || !isAdmin.value ? '#198754' : '#6c757d',
+    cancelButtonColor: '#6c757d',
+    allowOutsideClick: true
   }).then((res) => {
-    if (res.isConfirmed) {
+    if (res.isConfirmed && (telefonoValido || !isAdmin.value)) {
       window.open(whatsAppUrl, '_blank', 'noopener,noreferrer');
     }
   });
+  
+  // Deshabilitar el botón si es admin y no hay teléfono válido
+  if (isAdmin.value && !telefonoValido) {
+    setTimeout(() => {
+      const confirmButton = document.querySelector('.swal2-confirm') as HTMLButtonElement;
+      if (confirmButton) {
+        confirmButton.disabled = true;
+        confirmButton.style.opacity = '0.6';
+        confirmButton.style.cursor = 'not-allowed';
+      }
+    }, 100);
+  }
 };
 </script>
 

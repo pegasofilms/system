@@ -16,7 +16,6 @@ const MUNICIPIOS_OAXACA = [
   'Santos Reyes Nopala',
   'Santiago Yaitepec',
   'Villa de Tututepec de Melchor Ocampo',
-  'Otro (Municipio no listado)'
 ];
 
 export const MUNICIPIOS_OAXACA_URL =

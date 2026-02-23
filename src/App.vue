@@ -12,7 +12,7 @@ import { RouterView } from 'vue-router';
 
 <style scoped></style>
 <style>
-/* Navbar fijo: compartido por Navbar y NavbarAdmin */
+/* Navbar fijo */
 .navbar.fixed-top {
   z-index: 1030;
 }

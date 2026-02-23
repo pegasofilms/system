@@ -1,6 +1,6 @@
 <template>
   <div class="contratos-page">
-    <NavbarAdmin />
+    <Navbar />
     <div class="container my-2">
       <div class="row">
         <div class="col-12 d-flex align-items-center justify-content-between">
@@ -36,7 +36,7 @@ import type { Contrato } from '@/types/contrato';
 import type { ContratoFormPayload } from '@/types/contrato';
 import { fetchContratos, createContrato, updateContrato, deleteContrato } from '@/services/contratosApi';
 import { formatDate } from '@/utils/contratoFormatters';
-import NavbarAdmin from '@/components/NavbarAdmin.vue';
+import Navbar from '@/components/Navbar.vue';
 import ContratosTable from '@/components/contratos/ContratosTable.vue';
 import ContratoViewModal from '@/components/contratos/ContratoViewModal.vue';
 import ContratoFormModal from '@/components/contratos/ContratoFormModal.vue';
