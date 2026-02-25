@@ -27,10 +27,6 @@ import { limpiarBackdropModal } from '@/utils/modalCleanup';
 import type { Component } from 'vue';
 import {
   CambiarContrasenaStarlink,
-  EventoFacebook,
-  EnvioYouTube,
-  ReelFacebook,
-  ShortYouTube
 } from '@/components/instrucciones';
 
 const props = withDefaults(
@@ -50,10 +46,6 @@ let bsModal: Modal | null = null;
 
 const MAPA_COMPONENTES: Record<string, Component> = {
   'cambiar-contrasena-starlink': CambiarContrasenaStarlink,
-  'evento-facebook': EventoFacebook,
-  'envio-youtube': EnvioYouTube,
-  'reel-facebook': ReelFacebook,
-  'short-youtube': ShortYouTube
 };
 
 const iconClass = computed(() =>

@@ -13,6 +13,7 @@ import "@/style.css";
 import "@/styles/navbar.css";
 import "@/styles/modal-header.css";
 import "@/styles/contrato-form-section.css";
+import "@/styles/instrucciones.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 

@@ -1,0 +1,82 @@
+/**
+ * Estilos compartidos para componentes de instrucciones (pasos numerados + capturas).
+ * Usar la estructura: .instruccion > .intro + .pasos > .paso > .instruccion-paso + .captura (opcional).
+ * Importado en main.ts.
+ */
+
+.instruccion {
+  text-align: left;
+  max-width: 42rem;
+}
+
+.instruccion .intro {
+  margin-bottom: 1.25rem;
+  color: var(--bs-secondary);
+}
+
+.instruccion .pasos {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.instruccion .paso {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.instruccion .instruccion-paso {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.instruccion .instruccion-paso p {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.5;
+}
+
+.instruccion .paso-numero {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--bs-white);
+  background: var(--bs-primary);
+  border-radius: 50%;
+}
+
+.instruccion .captura {
+  padding: 0;
+  border: 1px solid var(--bs-border-color);
+}
+
+.instruccion .captura img {
+  border-radius: 0.5rem;
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  padding: 0;
+  margin: 0;
+}
+
+.instruccion .pie {
+  display: block;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.8rem;
+  color: var(--bs-secondary);
+  background: var(--bs-light, #f8f9fa);
+}
