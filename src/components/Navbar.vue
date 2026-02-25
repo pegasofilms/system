@@ -24,14 +24,14 @@
               <li class="nav-item">
                 <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('servicios')"><i class="fa-solid fa-gear me-1"></i>Servicios</a>
               </li>
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('como-trabajamos')"><i class="fa-solid fa-satellite-dish me-1"></i>Como trabajamos</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('videos')"><i class="fa-solid fa-video me-1"></i>Videos</a>
-              </li>
+              </li> -->
               <li class="nav-item">
                 <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('contacto')"><i class="fa-solid fa-envelope me-1"></i>Contacto</a>
+              </li>
+              <li class="nav-item">
+                <router-link to="/videos" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-video me-1"></i>Videos</router-link>
               </li>
             </template>
 
@@ -131,6 +131,6 @@ const scrollToSection = (id: string, retries = 5) => {
 function handleLogout() {
   closeMenu();
   clearSession();
-  router.push('/login');
+  router.push('/');
 }
 </script>

@@ -5,6 +5,7 @@ import Contratos from '@/pages/Contratos.vue';
 import Cotizar from '@/pages/Cotizar.vue';
 import CotizarAdmin from '@/pages/CotizarAdmin.vue';
 import Tutoriales from '@/pages/Tutoriales.vue';
+import Videos from '@/pages/Videos.vue';
 import EditarPerfil from '@/pages/EditarPerfil.vue';
 import { useAuth } from '@/composables/useAuth';
 
@@ -41,6 +42,11 @@ const routes = [
     name: 'Tutoriales',
     component: Tutoriales,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/videos',
+    name: 'Videos',
+    component: Videos
   },
   {
     path: '/editar-perfil',

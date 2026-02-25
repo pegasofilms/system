@@ -4,8 +4,6 @@
     <HeroSection />
     <ServiciosSection />
     <ComoTrabajamosSection />
-    <VideosSection />
-    <RedesSocialesSection />
     <ContactoFooter />
   </div>
 </template>
@@ -15,8 +13,6 @@ import Navbar from '@/components/Navbar.vue';
 import HeroSection from '@/components/sections/HeroSection.vue';
 import ServiciosSection from '@/components/sections/ServiciosSection.vue';
 import ComoTrabajamosSection from '@/components/sections/ComoTrabajamosSection.vue';
-import VideosSection from '@/components/sections/VideosSection.vue';
-import RedesSocialesSection from '@/components/sections/RedesSocialesSection.vue';
 import ContactoFooter from '@/components/sections/ContactoFooter.vue';
 </script>
 

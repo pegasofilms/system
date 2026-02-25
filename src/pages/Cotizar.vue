@@ -1,6 +1,7 @@
 <template>
   <Navbar />
   <CotizacionForm />
+  <ContactoFooter />
 </template>
 
 <script setup lang="ts">
