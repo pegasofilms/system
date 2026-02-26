@@ -1,14 +1,14 @@
 <template>
-  <ul class="nav nav-tabs videos-tabs mb-4" role="tablist">
+  <ul class="nav nav-tabs videos-tabs mb-2" role="tablist">
     <li class="nav-item" role="presentation">
       <button type="button" class="nav-link" :class="{ active: modelValue === 'nopala' }" role="tab"
-        aria-selected="modelValue === 'nopala'" @click="select('nopala')">
+        :aria-selected="modelValue === 'nopala'" @click="select('nopala')">
         VIDEOS
       </button>
     </li>
     <li class="nav-item" role="presentation"> 
       <button type="button" class="nav-link" :class="{ active: modelValue === 'live' }" role="tab"
-        aria-selected="modelValue === 'live'" @click="select('live')">
+        :aria-selected="modelValue === 'live'" @click="select('live')">
         LIVE
       </button>
     </li>

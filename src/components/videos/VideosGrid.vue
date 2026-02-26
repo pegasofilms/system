@@ -13,23 +13,43 @@
       No hay videos en este canal.
     </div>
     <template v-else>
-      <div class="videos-filters mb-4">
-        <div class="form-check form-check-inline align-middle">
-          <input id="filter-todo" v-model="showAll" type="checkbox" class="form-check-input">
-          <label for="filter-todo" class="form-check-label">Todo</label>
+      <div class="videos-toolbar bg-light rounded-3 my-2 py-2 px-2 shadow-sm">
+        <div class="videos-toolbar-inner">
+          <div class="videos-toolbar-search-wrap">
+            <div class="input-group input-group-sm videos-toolbar-search">
+              <span class="input-group-text bg-white border-end-0" aria-label="Buscar">
+                <i class="fa-solid fa-magnifying-glass text-muted" aria-hidden="true"></i>
+              </span>
+              <input v-model.trim="searchQuery" type="search" class="form-control border-start-0 ps-0"
+                placeholder="Buscar por título..." aria-label="Buscar videos">
+            </div>
+          </div>
+          <div class="videos-toolbar-item">
+            <div class="form-check mb-0">
+              <input id="filter-todo" v-model="showAll" type="checkbox" class="form-check-input">
+              <label for="filter-todo" class="form-check-label small text-muted">Todos</label>
+            </div>
+          </div>
+          <div class="videos-toolbar-item">
+            <select v-model="order" class="form-select form-select-sm videos-toolbar-select">
+              <option value="desc">Más recientes</option>
+              <option value="asc">Más antiguos</option>
+            </select>
+          </div>
+          <div class="videos-toolbar-item">
+            <select v-model="selectedYear" class="form-select form-select-sm videos-toolbar-select" :disabled="showAll">
+              <option value="" disabled selected hidden>Año</option>
+              <option v-for="y in yearsList" :key="y" :value="String(y)">{{ y }}</option>
+            </select>
+          </div>
+          <div class="videos-toolbar-item">
+            <select v-model="selectedMonth" class="form-select form-select-sm videos-toolbar-select"
+              :disabled="showAll">
+              <option value="">Todos</option>
+              <option v-for="m in monthOptions" :key="m.value" :value="m.value">{{ m.label }}</option>
+            </select>
+          </div>
         </div>
-        <select v-model="selectedYear" class="form-select form-select-sm videos-filter-select" :disabled="showAll">
-          <option value="">Año</option>
-          <option v-for="y in yearsList" :key="y" :value="String(y)">{{ y }}</option>
-        </select>
-        <select v-model="selectedMonth" class="form-select form-select-sm videos-filter-select" :disabled="showAll">
-          <option value="">Mes</option>
-          <option v-for="m in monthOptions" :key="m.value" :value="m.value">{{ m.label }}</option>
-        </select>
-        <select v-model="order" class="form-select form-select-sm videos-filter-select">
-          <option value="desc">Más recientes primero</option>
-          <option value="asc">Más antiguos primero</option>
-        </select>
       </div>
       <div class="row g-4">
         <div v-for="video in filteredAndSorted" :key="video.video_id" class="col-md-6 col-lg-4">
@@ -46,7 +66,8 @@
         </div>
       </div>
       <p v-if="!filteredAndSorted.length" class="text-muted text-center py-3 mb-0">
-        No hay videos con los filtros seleccionados.
+        {{ searchQuery ? 'No hay videos que coincidan con la búsqueda.' : 'No hay videos con los filtros seleccionados.'
+        }}
       </p>
     </template>
   </div>
@@ -69,6 +90,7 @@ const now = new Date();
 const currentYear = String(now.getFullYear());
 const currentMonth = String(now.getMonth() + 1);
 
+const searchQuery = ref('');
 const showAll = ref(false);
 const selectedYear = ref(currentYear);
 const selectedMonth = ref(currentMonth);
@@ -104,6 +126,10 @@ const filteredAndSorted = computed(() => {
       if (selectedMonth.value && m !== selectedMonth.value) return false;
       return true;
     });
+  }
+  const q = searchQuery.value.toLowerCase();
+  if (q) {
+    list = list.filter((v) => (v.title ?? '').toLowerCase().includes(q));
   }
   const asc = order.value === 'asc';
   return [...list].sort((a, b) => {
@@ -141,6 +167,7 @@ async function load() {
   }
   videos.value = data ?? [];
   const n = new Date();
+  searchQuery.value = '';
   showAll.value = false;
   selectedYear.value = String(n.getFullYear());
   selectedMonth.value = String(n.getMonth() + 1);
@@ -175,24 +202,102 @@ watch(() => props.refreshTrigger, () => { if (props.refreshTrigger > 0) load(); 
 .card-body {
   flex: 1;
 }
+
 .card-title {
   font-size: 0.95rem;
   white-space: normal;
   word-wrap: break-word;
 }
+
 .video-date {
   font-size: 0.8rem;
   color: #6c757d;
 }
 
-.videos-filters {
+/* Barra tipo YouTube Studio – distribución con CSS */
+.videos-toolbar-inner {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.75rem;
 }
-.videos-filter-select {
-  width: auto;
-  min-width: 8rem;
+
+.videos-toolbar-search-wrap {
+  width: 100%;
+}
+
+.videos-toolbar-item {
+  width: 100%;
+}
+
+.videos-toolbar-item .form-select,
+.videos-toolbar-item .form-control {
+  width: 100%;
+}
+
+@media (min-width: 576px) {
+  .videos-toolbar-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .videos-toolbar-search-wrap {
+    grid-column: 1 / -1;
+  }
+
+  .videos-toolbar-item .form-select {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (min-width: 992px) {
+  .videos-toolbar-inner {
+    grid-template-columns: 1fr auto auto auto auto;
+    gap: 1rem;
+  }
+
+  .videos-toolbar-search-wrap {
+    grid-column: auto;
+    min-width: 12rem;
+    max-width: 20rem;
+  }
+
+  .videos-toolbar-item {
+    width: auto;
+    min-width: 7.5rem;
+  }
+
+  .videos-toolbar-item .form-select {
+    width: 100%;
+    min-width: 7.5rem;
+  }
+}
+
+.videos-toolbar-search.input-group {
+  border-radius: 1.5rem;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  overflow: hidden;
+}
+
+.videos-toolbar-search .input-group-text {
+  border: none;
+  border-radius: 1.5rem 0 0 1.5rem;
+}
+
+.videos-toolbar-search .form-control {
+  border: none;
+  border-radius: 0 1.5rem 1.5rem 0;
+  background: transparent;
+}
+
+.videos-toolbar-search .form-control:focus {
+  box-shadow: none;
+}
+
+.videos-toolbar-select {
+  min-width: 7.5rem;
 }
 </style>

@@ -6,18 +6,13 @@
         <p class="videos-intro-text">Busca el video de tu evento</p>
       </div>
       <div v-if="isAdmin" class="text-center mt-2">
-        <button
-          type="button"
-          class="btn btn-outline-primary me-2 mb-2"
-          :disabled="syncing"
-          @click="sincronizarVideos"
-        >
+        <button type="button" class="btn btn-outline-primary me-2 mb-2" :disabled="syncing" @click="sincronizarVideos">
           <span v-if="syncing" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
           <i v-else class="fa-solid fa-sync me-2"></i>Sincronizar videos
         </button>
       </div>
 
-      <div class="videos-guide">
+      <div class="videos-guide shadow-sm rounded-3 border">
         <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i>
         <span><strong>Guía:</strong> Si tu evento fue grabado en una fecha determinada, el video puede aparecer algunas
           semanas después; la subida y edición no son inmediatas.</span>
