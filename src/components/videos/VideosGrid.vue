@@ -56,7 +56,10 @@
 import { ref, watch, computed } from 'vue';
 import { fetchVideosByChannel, CHANNEL_NAMES, type ChannelKey, type VideoRow } from '@/services/videosApi';
 
-const props = defineProps<{ channelKey: ChannelKey }>();
+const props = withDefaults(
+  defineProps<{ channelKey: ChannelKey; refreshTrigger?: number }>(),
+  { refreshTrigger: 0 }
+);
 
 const videos = ref<VideoRow[]>([]);
 const loading = ref(true);
@@ -145,6 +148,7 @@ async function load() {
 }
 
 watch(() => props.channelKey, load, { immediate: true });
+watch(() => props.refreshTrigger, () => { if (props.refreshTrigger > 0) load(); });
 </script>
 
 <style scoped>

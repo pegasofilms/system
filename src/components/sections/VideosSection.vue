@@ -6,10 +6,15 @@
         <p class="videos-intro-text">Busca el video de tu evento</p>
       </div>
       <div v-if="isAdmin" class="text-center mt-2">
-        <a :href="enlacesYouTube.canal" target="_blank" rel="noopener noreferrer"
-          class="btn btn-outline-primary me-2 mb-2">
-          <i class="fa-solid fa-sync me-2"></i>Sincronizar videos
-        </a>
+        <button
+          type="button"
+          class="btn btn-outline-primary me-2 mb-2"
+          :disabled="syncing"
+          @click="sincronizarVideos"
+        >
+          <span v-if="syncing" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+          <i v-else class="fa-solid fa-sync me-2"></i>Sincronizar videos
+        </button>
       </div>
 
       <div class="videos-guide">
@@ -19,7 +24,7 @@
       </div>
 
       <VideosTabs v-model="activeTab" />
-      <VideosGrid :channel-key="activeTab" />
+      <VideosGrid :channel-key="activeTab" :refresh-trigger="refreshTrigger" />
     </div>
   </section>
 </template>
@@ -27,16 +32,33 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useAuth } from '@/composables/useAuth';
-import { getEnlacesYouTube } from '@/data/empresa';
 import VideosTabs from '@/components/videos/VideosTabs.vue';
 import VideosGrid from '@/components/videos/VideosGrid.vue';
-import type { ChannelKey } from '@/services/videosApi';
+import { syncVideosFromYouTube, type ChannelKey } from '@/services/videosApi';
+import Swal from 'sweetalert2';
 
 const { isAuthenticated } = useAuth();
 const isAdmin = computed(() => isAuthenticated.value);
 
-const enlacesYouTube = getEnlacesYouTube();
 const activeTab = ref<ChannelKey>('nopala');
+const syncing = ref(false);
+const refreshTrigger = ref(0);
+
+async function sincronizarVideos() {
+  syncing.value = true;
+  const { upserted, error } = await syncVideosFromYouTube();
+  syncing.value = false;
+  if (error) {
+    await Swal.fire({ icon: 'error', title: 'Error al sincronizar', text: error.message });
+    return;
+  }
+  refreshTrigger.value += 1;
+  await Swal.fire({
+    icon: 'success',
+    title: 'Videos sincronizados',
+    text: upserted === 0 ? 'No había videos nuevos.' : `Se sincronizaron ${upserted} video(s) con la base de datos.`,
+  });
+}
 </script>
 
 <style scoped>
