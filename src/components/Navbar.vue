@@ -30,13 +30,14 @@
               <li class="nav-item">
                 <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('contacto')"><i class="fa-solid fa-envelope me-1"></i>Contacto</a>
               </li>
-              <li class="nav-item">
-                <router-link to="/videos" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-video me-1"></i>Videos</router-link>
-              </li>
             </template>
 
             <li class="nav-item">
                 <router-link to="/cotizar" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-calculator me-1"></i>Cotizar</router-link>
+            </li>
+
+            <li class="nav-item">
+              <router-link to="/videos" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-video me-1"></i>Videos</router-link>
             </li>
 
             <li class="nav-item" v-if="currentUser">

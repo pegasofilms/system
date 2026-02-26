@@ -4,13 +4,14 @@
     <main class="videos-main">
       <VideosSection />
     </main>
-    
+    <ContactoFooter />
   </div>
 </template>
 
 <script setup lang="ts">
 import Navbar from '@/components/Navbar.vue';
 import VideosSection from '@/components/sections/VideosSection.vue';
+import ContactoFooter from '@/components/sections/ContactoFooter.vue';
 // import ContactoFooter from '@/components/sections/ContactoFooter.vue';
 </script>
 
