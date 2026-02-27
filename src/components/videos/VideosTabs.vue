@@ -12,7 +12,7 @@
         LIVE
       </button>
     </li>
-    <li class="nav-item" role="presentation"> 
+    <li v-if="isAdmin" class="nav-item" role="presentation"> 
       <button type="button" class="nav-link" :class="{ active: modelValue === 'privado' }" role="tab"
         :aria-selected="modelValue === 'privado'" @click="select('privado')">
         PRIVADO
@@ -22,10 +22,15 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import type { ChannelKey } from '@/services/videosApi';
+import { useAuth } from '@/composables/useAuth';
 
 defineProps<{ modelValue: ChannelKey }>();
 const emit = defineEmits<{ 'update:modelValue': [value: ChannelKey] }>();
+
+const { isAuthenticated } = useAuth();
+const isAdmin = computed(() => isAuthenticated.value);
 
 function select(key: ChannelKey) {
   emit('update:modelValue', key);
