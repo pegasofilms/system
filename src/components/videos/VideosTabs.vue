@@ -12,6 +12,12 @@
         LIVE
       </button>
     </li>
+    <li class="nav-item" role="presentation"> 
+      <button type="button" class="nav-link" :class="{ active: modelValue === 'privado' }" role="tab"
+        :aria-selected="modelValue === 'privado'" @click="select('privado')">
+        PRIVADO
+      </button>
+    </li>
   </ul>
 </template>
 

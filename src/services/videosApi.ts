@@ -50,6 +50,7 @@ export interface VideoRow {
 export const CHANNEL_NAMES = {
   nopala: 'PEGASO FILMS NOPALA',
   live: 'PEGASO FILMS LIVE',
+  privado: 'PRIVADO',
 } as const;
 
 export type ChannelKey = keyof typeof CHANNEL_NAMES;
@@ -58,6 +59,7 @@ export type ChannelKey = keyof typeof CHANNEL_NAMES;
 const CHANNEL_IDS: Record<ChannelKey, string> = {
   nopala: import.meta.env.VITE_YOUTUBE_CHANNEL_PEGASO_FILMS ?? '',
   live: import.meta.env.VITE_YOUTUBE_CHANNEL_PEGASO_LIVE ?? '',
+  privado: '',
 };
 
 function mapItemToRow(item: YouTubeSearchItem, channelTitle: string): VideoRow | null {
