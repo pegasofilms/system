@@ -232,7 +232,7 @@ const selectedWhatsAppUrl = computed(() => {
 });
 
 function thumbnailUrl(video: VideoRow) {
-  return video.thumbnail_medium_url ?? video.thumbnail_high_url ?? video.thumbnail_default_url ?? '';
+  return 'https://img.youtube.com/vi/' + video.video_id + '/mqdefault.jpg';
 }
 
 function formatDate(iso: string | null): string {
