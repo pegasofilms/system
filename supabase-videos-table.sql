@@ -36,11 +36,6 @@ CREATE TABLE IF NOT EXISTS public.videos (
     -- Fechas (API: publishedAt / publishTime)
     published_at TIMESTAMPTZ,
 
-    -- Miniaturas (guardamos las 3 para usar según contexto)
-    thumbnail_default_url TEXT,
-    thumbnail_medium_url TEXT,
-    thumbnail_high_url TEXT,
-
     -- Estado de transmisión (API: liveBroadcastContent: none | live | upcoming)
     live_broadcast_content TEXT DEFAULT 'none',
 
@@ -109,9 +104,6 @@ INSERT INTO public.videos (
     channel_id,
     channel_title,
     published_at,
-    thumbnail_default_url,
-    thumbnail_medium_url,
-    thumbnail_high_url,
     live_broadcast_content,
     source
 ) VALUES (
@@ -121,9 +113,6 @@ INSERT INTO public.videos (
     'UCY3VBLakqvCKCaHKTtv-oyQ',
     'PEGASO FILMS LIVE',
     '2026-02-20T22:06:21Z'::timestamptz,
-    'https://i.ytimg.com/vi/kW9BbvF8jOM/default.jpg',
-    'https://i.ytimg.com/vi/kW9BbvF8jOM/mqdefault.jpg',
-    'https://i.ytimg.com/vi/kW9BbvF8jOM/hqdefault.jpg',
     'none',
     'youtube_api'
 )
@@ -133,9 +122,6 @@ ON CONFLICT (video_id) DO UPDATE SET
     channel_id = EXCLUDED.channel_id,
     channel_title = EXCLUDED.channel_title,
     published_at = EXCLUDED.published_at,
-    thumbnail_default_url = EXCLUDED.thumbnail_default_url,
-    thumbnail_medium_url = EXCLUDED.thumbnail_medium_url,
-    thumbnail_high_url = EXCLUDED.thumbnail_high_url,
     live_broadcast_content = EXCLUDED.live_broadcast_content,
     updated_at = NOW();
 */
@@ -144,7 +130,7 @@ ON CONFLICT (video_id) DO UPDATE SET
 -- EJEMPLO: inserción manual (solo lo mínimo)
 -- ============================================
 /*
-INSERT INTO public.videos (video_id, title, channel_title, thumbnail_high_url, source)
-VALUES ('abc123xyz', 'Mi video manual', 'PEGASO FILMS LIVE', 'https://i.ytimg.com/vi/abc123xyz/hqdefault.jpg', 'manual')
+INSERT INTO public.videos (video_id, title, channel_title, source)
+VALUES ('abc123xyz', 'Mi video manual', 'PEGASO FILMS LIVE', 'manual')
 ON CONFLICT (video_id) DO NOTHING;
 */

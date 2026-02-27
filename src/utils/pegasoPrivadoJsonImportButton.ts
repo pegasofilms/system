@@ -15,9 +15,6 @@ type VideoRow = {
   channel_id: string | null;
   channel_title: string | null;
   published_at: string | null;
-  thumbnail_default_url: string | null;
-  thumbnail_medium_url: string | null;
-  thumbnail_high_url: string | null;
   live_broadcast_content: string;
   source: 'youtube_api' | 'manual';
 };
@@ -60,7 +57,6 @@ function secondsToIso(sec: string | undefined): string | null {
 function mapLocalJsonVideoToRow(v: LocalJsonVideo): VideoRow | null {
   const videoId = v.videoId?.trim();
   if (!videoId) return null;
-  const thumbs = v.thumbnailDetails?.thumbnails;
   return {
     video_id: videoId,
     title: v.title?.trim() || '',
@@ -68,9 +64,6 @@ function mapLocalJsonVideoToRow(v: LocalJsonVideo): VideoRow | null {
     channel_id: v.channelId ?? null,
     channel_title: CHANNEL_TITLE,
     published_at: secondsToIso(v.timeCreatedSeconds),
-    thumbnail_default_url: pickThumbUrl(thumbs, 120),
-    thumbnail_medium_url: pickThumbUrl(thumbs, 320),
-    thumbnail_high_url: pickThumbUrl(thumbs, 480),
     live_broadcast_content: 'none',
     source: 'manual',
   };

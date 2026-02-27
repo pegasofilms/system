@@ -39,9 +39,6 @@ export interface VideoRow {
   channel_id: string | null;
   channel_title: string | null;
   published_at: string | null;
-  thumbnail_default_url: string | null;
-  thumbnail_medium_url: string | null;
-  thumbnail_high_url: string | null;
   live_broadcast_content: string;
   source: 'youtube_api' | 'manual';
 }
@@ -68,7 +65,6 @@ function mapItemToRow(item: YouTubeSearchItem, channelTitle: string): VideoRow |
   if (!videoId || kind !== 'youtube#video') return null;
 
   const s = item.snippet ?? {};
-  const th = s.thumbnails ?? {};
   return {
     video_id: videoId,
     title: s.title ?? '',
@@ -76,9 +72,6 @@ function mapItemToRow(item: YouTubeSearchItem, channelTitle: string): VideoRow |
     channel_id: s.channelId ?? null,
     channel_title: channelTitle,
     published_at: s.publishedAt ?? s.publishTime ?? null,
-    thumbnail_default_url: th.default?.url ?? null,
-    thumbnail_medium_url: th.medium?.url ?? null,
-    thumbnail_high_url: th.high?.url ?? null,
     live_broadcast_content: s.liveBroadcastContent ?? 'none',
     source: 'youtube_api',
   };
@@ -177,7 +170,7 @@ export async function fetchVideosByChannel(channelTitle: string): Promise<{
 }> {
   const { data, error } = await supabase
     .from(TABLE)
-    .select('video_id, title, description, channel_id, channel_title, published_at, thumbnail_default_url, thumbnail_medium_url, thumbnail_high_url, live_broadcast_content, source')
+    .select('video_id, title, description, channel_id, channel_title, published_at, live_broadcast_content, source')
     .eq('channel_title', channelTitle)
     .order('published_at', { ascending: false });
 
