@@ -181,11 +181,6 @@ function watchUrl(videoId: string) {
   return `https://www.youtube.com/watch?v=${videoId}`;
 }
 
-function openVideo(videoId: string) {
-  const url = watchUrl(videoId);
-  window.open(url, '_blank', 'noopener,noreferrer');
-}
-
 /** URL de WhatsApp sin número: abre la app con el mensaje y el usuario elige a quién enviarlo */
 function shareWhatsAppUrl(video: VideoRow) {
   const url = watchUrl(video.video_id);

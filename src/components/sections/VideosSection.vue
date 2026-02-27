@@ -10,6 +10,7 @@
           <span v-if="syncing" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
           <i v-else class="fa-solid fa-sync me-2"></i>Sincronizar videos
         </button>
+        <!-- <PegasoPrivadoJsonImportButton :disabled="syncing" @done="refreshTrigger += 1" /> -->
       </div>
 
       <div class="videos-guide shadow-sm rounded-3 border">
@@ -30,6 +31,7 @@ import { useAuth } from '@/composables/useAuth';
 import VideosTabs from '@/components/videos/VideosTabs.vue';
 import VideosGrid from '@/components/videos/VideosGrid.vue';
 import { syncVideosFromYouTube, type ChannelKey } from '@/services/videosApi';
+// import PegasoPrivadoJsonImportButton from '@/utils/pegasoPrivadoJsonImportButton';
 import Swal from 'sweetalert2';
 
 const { isAuthenticated } = useAuth();
