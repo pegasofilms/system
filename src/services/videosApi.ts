@@ -133,7 +133,19 @@ export async function syncVideosFromYouTube(): Promise<{
 }> {
   const byVideoId = new Map<string, VideoRow>();
 
-  for (const key of ['nopala', 'live'] as ChannelKey[]) {
+  const syncKeys = ['nopala', 'live'] as ChannelKey[];
+  const configured = syncKeys.filter((k) => Boolean(CHANNEL_IDS[k]));
+  if (configured.length === 0) {
+    return {
+      upserted: 0,
+      error: {
+        message:
+          'No hay canales configurados para sincronización. Revisa que existan VITE_YOUTUBE_CHANNEL_PEGASO_FILMS y/o VITE_YOUTUBE_CHANNEL_PEGASO_LIVE en el entorno donde se construye/despliega la app (en producción Vite “hornea” las variables en build).',
+      },
+    };
+  }
+
+  for (const key of syncKeys) {
     const channelId = CHANNEL_IDS[key];
     const channelTitle = CHANNEL_NAMES[key];
     if (!channelId) continue;
