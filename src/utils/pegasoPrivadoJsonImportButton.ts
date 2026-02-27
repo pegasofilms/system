@@ -19,14 +19,12 @@ type VideoRow = {
   source: 'youtube_api' | 'manual';
 };
 
-type LocalJsonThumb = { url?: string; width?: number; height?: number };
 type LocalJsonVideo = {
   videoId?: string;
   title?: string;
   description?: string;
   channelId?: string;
   timeCreatedSeconds?: string;
-  thumbnailDetails?: { thumbnails?: LocalJsonThumb[] };
 };
 
 type LocalJsonPayload = { videos?: LocalJsonVideo[] };
@@ -37,14 +35,6 @@ import json2Url from '@/data/2.json?url';
 import json3Url from '@/data/3.json?url';
 import json4Url from '@/data/4.json?url';
 import json5Url from '@/data/5.json?url';
-
-function pickThumbUrl(thumbnails: LocalJsonThumb[] | undefined, minWidth: number): string | null {
-  const list = (thumbnails ?? []).filter((t) => typeof t.url === 'string' && t.url.length > 0 && typeof t.width === 'number');
-  if (!list.length) return null;
-  const sorted = [...list].sort((a, b) => (a.width ?? 0) - (b.width ?? 0));
-  const found = sorted.find((t) => (t.width ?? 0) >= minWidth) ?? sorted[sorted.length - 1];
-  return found.url ?? null;
-}
 
 function secondsToIso(sec: string | undefined): string | null {
   if (!sec) return null;
