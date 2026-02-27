@@ -73,8 +73,12 @@
               <h6 class="card-title">{{ video.title }}</h6>
               <div class="video-card-actions">
                 <a :href="watchUrl(video.video_id)" target="_blank" rel="noopener noreferrer" @click.stop
-                  class="btn  btn-outline-danger" title="Ver en YouTube">
+                  class="btn btn-outline-danger" title="Ver en YouTube">
                   <i class="fa-solid fa-play me-1"></i>Play
+                </a>
+                <a :href="editUrl(video.video_id)" target="_blank" rel="noopener noreferrer" @click.stop
+                  class="btn btn-outline-secondary" title="Editar en YouTube Studio">
+                  <i class="fa-solid fa-pen-to-square me-1"></i>Editar
                 </a>
                 <a :href="shareWhatsAppUrl(video)" target="_blank" rel="noopener noreferrer" @click.stop
                   class="btn btn-outline-success" title="Compartir por WhatsApp">
@@ -181,6 +185,10 @@ const filteredAndSorted = computed(() => {
 
 function watchUrl(videoId: string) {
   return `https://www.youtube.com/watch?v=${videoId}`;
+}
+
+function editUrl(videoId: string) {
+  return `https://studio.youtube.com/video/${videoId}/edit`;
 }
 
 /** URL de WhatsApp sin número: abre la app con el mensaje y el usuario elige a quién enviarlo */
