@@ -53,16 +53,35 @@
       </div>
       <div class="row g-4">
         <div v-for="video in filteredAndSorted" :key="video.video_id" class="col-md-6 col-lg-4">
-          <a :href="watchUrl(video.video_id)" target="_blank" rel="noopener noreferrer"
-            class="card h-100 shadow-sm video-card-link">
-            <div class="ratio ratio-16x9 bg-dark overflow-hidden">
+          <div class="card h-100 shadow-sm video-card" :class="{ 'is-selected': isSelected(video.video_id) }"
+            role="link" tabindex="0" :aria-label="`Abrir video: ${video.title ?? 'Video'}`">
+            <div class="ratio ratio-16x9 bg-dark overflow-hidden video-card-thumb">
               <img :src="thumbnailUrl(video)" :alt="video.title" class="video-thumb" loading="lazy">
+              <button type="button" class="video-select-btn" :class="{ 'is-selected': isSelected(video.video_id) }"
+                :aria-pressed="isSelected(video.video_id)"
+                :title="isSelected(video.video_id) ? 'Quitar de selección' : 'Seleccionar'"
+                @click.stop="toggleSelected(video.video_id)">
+                <i v-if="isSelected(video.video_id)" class="fa-solid fa-check"></i>
+                <span class="visually-hidden">
+                  {{ isSelected(video.video_id) ? 'Quitar de selección' : 'Seleccionar' }}
+                </span>
+              </button>
             </div>
             <div class="card-body d-flex flex-column">
               <h6 class="card-title">{{ video.title }}</h6>
+              <div class="video-card-actions">
+                <a :href="watchUrl(video.video_id)" target="_blank" rel="noopener noreferrer" @click.stop
+                  class="btn  btn-outline-danger" title="Ver en YouTube">
+                  <i class="fa-solid fa-play me-1"></i>Play
+                </a>
+                <a :href="shareWhatsAppUrl(video)" target="_blank" rel="noopener noreferrer" @click.stop
+                  class="btn btn-outline-success" title="Compartir por WhatsApp">
+                  <i class="fa-brands fa-whatsapp me-1"></i>Compartir
+                </a>
+              </div>
               <span class="video-date mt-auto">{{ formatDate(video.published_at) }}</span>
             </div>
-          </a>
+          </div>
         </div>
       </div>
       <p v-if="!filteredAndSorted.length" class="text-muted text-center py-3 mb-0">
@@ -70,6 +89,23 @@
         }}
       </p>
     </template>
+
+    <div v-if="selectedCount > 0" class="videos-share-bar" role="region" aria-label="Acciones de selección">
+      <div class="videos-share-bar-inner">
+        <div class="videos-share-bar-left">
+          <div class="fw-semibold">{{ selectedCount }} seleccionado{{ selectedCount === 1 ? '' : 's' }}</div>
+        </div>
+        <div class="videos-share-bar-actions">
+          <a :href="selectedWhatsAppUrl" target="_blank" rel="noopener noreferrer" class="btn btn-success"
+            title="Compartir por WhatsApp">
+            <i class="fa-brands fa-whatsapp me-1"></i>Compartir
+          </a>
+          <button type="button" class="btn btn-outline-secondary" @click="clearSelection">
+            Limpiar
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -95,6 +131,8 @@ const showAll = ref(false);
 const selectedYear = ref(currentYear);
 const selectedMonth = ref(currentMonth);
 const order = ref<'desc' | 'asc'>('desc');
+
+const selectedIds = ref<Set<string>>(new Set());
 
 const monthOptions = [
   { value: '1', label: 'Enero' }, { value: '2', label: 'Febrero' }, { value: '3', label: 'Marzo' },
@@ -143,6 +181,56 @@ function watchUrl(videoId: string) {
   return `https://www.youtube.com/watch?v=${videoId}`;
 }
 
+function openVideo(videoId: string) {
+  const url = watchUrl(videoId);
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+/** URL de WhatsApp sin número: abre la app con el mensaje y el usuario elige a quién enviarlo */
+function shareWhatsAppUrl(video: VideoRow) {
+  const url = watchUrl(video.video_id);
+  const title = video.title?.trim() || 'Video';
+  const text = `${title}: ${url}`;
+  return `https://wa.me/?text=${encodeURIComponent(text)}`;
+}
+
+const selectedCount = computed(() => selectedIds.value.size);
+
+function isSelected(videoId: string) {
+  return selectedIds.value.has(videoId);
+}
+
+function toggleSelected(videoId: string) {
+  const next = new Set(selectedIds.value);
+  if (next.has(videoId)) next.delete(videoId);
+  else next.add(videoId);
+  selectedIds.value = next;
+}
+
+function clearSelection() {
+  selectedIds.value = new Set();
+}
+
+const selectedVideos = computed(() => {
+  const list = videos.value.filter((v) => selectedIds.value.has(v.video_id));
+  return [...list].sort((a, b) => {
+    const ta = a.published_at ? new Date(a.published_at).getTime() : 0;
+    const tb = b.published_at ? new Date(b.published_at).getTime() : 0;
+    return tb - ta;
+  });
+});
+
+const selectedShareText = computed(() => {
+  return selectedVideos.value
+    .map((v, idx) => `${idx + 1}. ${(v.title?.trim() || 'Video')}: ${watchUrl(v.video_id)}`)
+    .join('\n');
+});
+
+const selectedWhatsAppUrl = computed(() => {
+  const text = selectedShareText.value.trim();
+  return `https://wa.me/?text=${encodeURIComponent(text)}`;
+});
+
 function thumbnailUrl(video: VideoRow) {
   return video.thumbnail_medium_url ?? video.thumbnail_high_url ?? video.thumbnail_default_url ?? '';
 }
@@ -163,6 +251,7 @@ async function load() {
   if (err) {
     error.value = err.message;
     videos.value = [];
+    selectedIds.value = new Set();
     return;
   }
   videos.value = data ?? [];
@@ -172,6 +261,7 @@ async function load() {
   selectedYear.value = String(n.getFullYear());
   selectedMonth.value = String(n.getMonth() + 1);
   order.value = 'desc';
+  selectedIds.value = new Set();
 }
 
 watch(() => props.channelKey, load, { immediate: true });
@@ -179,17 +269,74 @@ watch(() => props.refreshTrigger, () => { if (props.refreshTrigger > 0) load(); 
 </script>
 
 <style scoped>
-.video-card-link {
-  color: inherit;
-  text-decoration: none;
-  border-radius: 0.375rem;
-  transition: box-shadow 0.2s, transform 0.2s;
+.videos-grid {
+  padding-bottom: 5.5rem;
 }
 
-.video-card-link:hover {
-  color: inherit;
+.video-card {
+  border-radius: 0.375rem;
+  transition: box-shadow 0.2s, transform 0.2s;
+  
+  user-select: none;
+  position: relative;
+}
+
+.video-card:hover {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
+}
+
+.video-card.is-selected {
+  border: 2px solid #dc3545;
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.15);
+}
+
+.video-card:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.video-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  position: relative;
+  z-index: 2;
+}
+
+.video-card-thumb {
+  position: relative;
+}
+
+.video-select-btn {
+  position: absolute;
+  margin: .5rem;
+  right: 0.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  background: transparent;
+  color: #fff;
+  font-size: 0.9rem;
+  z-index: 3;
+  cursor: pointer;
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+
+.video-select-btn.is-selected {
+  background: #dc3545;
+  border-color: rgba(255, 255, 255, 0.95);
+}
+
+.video-select-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
 .video-thumb {
@@ -299,5 +446,37 @@ watch(() => props.refreshTrigger, () => { if (props.refreshTrigger > 0) load(); 
 
 .videos-toolbar-select {
   min-width: 7.5rem;
+}
+
+.videos-share-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 0rem;
+  transform: translateX(-50%);
+  width: 100%;
+  z-index: 1030;
+}
+
+.videos-share-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0.75rem;
+  /* border-radius: 0.75rem; */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.15);
+}
+
+.videos-share-bar-left {
+  min-width: 0;
+}
+
+.videos-share-bar-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
 </style>
