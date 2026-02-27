@@ -61,7 +61,9 @@
                 :aria-pressed="isSelected(video.video_id)"
                 :title="isSelected(video.video_id) ? 'Quitar de selección' : 'Seleccionar'"
                 @click.stop="toggleSelected(video.video_id)">
-                <i v-if="isSelected(video.video_id)" class="fa-solid fa-check"></i>
+                <span v-if="isSelected(video.video_id)" class="video-select-number" aria-hidden="true">
+                  {{ selectedIndex(video.video_id) }}
+                </span>
                 <span class="visually-hidden">
                   {{ isSelected(video.video_id) ? 'Quitar de selección' : 'Seleccionar' }}
                 </span>
@@ -132,7 +134,7 @@ const selectedYear = ref(currentYear);
 const selectedMonth = ref(currentMonth);
 const order = ref<'desc' | 'asc'>('desc');
 
-const selectedIds = ref<Set<string>>(new Set());
+const selectedIds = ref<string[]>([]);
 
 const monthOptions = [
   { value: '1', label: 'Enero' }, { value: '2', label: 'Febrero' }, { value: '3', label: 'Marzo' },
@@ -189,30 +191,33 @@ function shareWhatsAppUrl(video: VideoRow) {
   return `https://wa.me/?text=${encodeURIComponent(text)}`;
 }
 
-const selectedCount = computed(() => selectedIds.value.size);
+const selectedCount = computed(() => selectedIds.value.length);
 
 function isSelected(videoId: string) {
-  return selectedIds.value.has(videoId);
+  return selectedIds.value.includes(videoId);
+}
+
+function selectedIndex(videoId: string): number | null {
+  const idx = selectedIds.value.indexOf(videoId);
+  return idx >= 0 ? idx + 1 : null;
 }
 
 function toggleSelected(videoId: string) {
-  const next = new Set(selectedIds.value);
-  if (next.has(videoId)) next.delete(videoId);
-  else next.add(videoId);
-  selectedIds.value = next;
+  const idx = selectedIds.value.indexOf(videoId);
+  if (idx >= 0) {
+    selectedIds.value = [...selectedIds.value.slice(0, idx), ...selectedIds.value.slice(idx + 1)];
+    return;
+  }
+  selectedIds.value = [...selectedIds.value, videoId];
 }
 
 function clearSelection() {
-  selectedIds.value = new Set();
+  selectedIds.value = [];
 }
 
 const selectedVideos = computed(() => {
-  const list = videos.value.filter((v) => selectedIds.value.has(v.video_id));
-  return [...list].sort((a, b) => {
-    const ta = a.published_at ? new Date(a.published_at).getTime() : 0;
-    const tb = b.published_at ? new Date(b.published_at).getTime() : 0;
-    return tb - ta;
-  });
+  const byId = new Map(videos.value.map((v) => [v.video_id, v] as const));
+  return selectedIds.value.map((id) => byId.get(id)).filter((v): v is VideoRow => Boolean(v));
 });
 
 const selectedShareText = computed(() => {
@@ -246,7 +251,7 @@ async function load() {
   if (err) {
     error.value = err.message;
     videos.value = [];
-    selectedIds.value = new Set();
+    selectedIds.value = [];
     return;
   }
   videos.value = data ?? [];
@@ -256,7 +261,7 @@ async function load() {
   selectedYear.value = String(n.getFullYear());
   selectedMonth.value = String(n.getMonth() + 1);
   order.value = 'desc';
-  selectedIds.value = new Set();
+  selectedIds.value = [];
 }
 
 watch(() => props.channelKey, load, { immediate: true });
@@ -327,6 +332,12 @@ watch(() => props.refreshTrigger, () => { if (props.refreshTrigger > 0) load(); 
 .video-select-btn.is-selected {
   background: #dc3545;
   border-color: rgba(255, 255, 255, 0.95);
+}
+
+.video-select-number {
+  font-weight: 800;
+  font-size: 0.95rem;
+  line-height: 1;
 }
 
 .video-select-btn:focus-visible {
