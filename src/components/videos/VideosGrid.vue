@@ -240,7 +240,7 @@ const selectedWhatsAppUrl = computed(() => {
 });
 
 function thumbnailUrl(video: VideoRow) {
-  return 'https://img.youtube.com/vi/' + video.video_id + '/mqdefault.jpg';
+  return 'https://img.youtube.com/vi/' + video.video_id + '/hqdefault.jpg';
 }
 
 function formatDate(iso: string | null): string {
