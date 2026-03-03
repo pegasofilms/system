@@ -153,7 +153,7 @@
                   :title="puedeReenviarWhatsApp ? 'Abre WhatsApp enviando el mensaje de entrega a tu propio número' : 'Necesitas tener un teléfono en tu cuenta y al menos un enlace de video'"
                   @click="reenviarAMiWhatsApp">
                   <i class="fa-brands fa-whatsapp me-1"></i>
-                  Mio
+                  Otro
                 </button>
               </div>
             </div>
@@ -191,7 +191,7 @@ import {
   formatPadrinosForDisplay,
   parseVideosEnlaces,
 } from '@/utils/contratoFormatters';
-import { getWhatsAppEntregaVideosUrl } from '@/utils/whatsappService';
+import { getWhatsAppEntregaVideosUrl, getWhatsAppEntregaVideosUrlElegirDestino } from '@/utils/whatsappService';
 
 const { currentUser } = useAuth();
 
@@ -275,7 +275,7 @@ function enviarVideosAlCliente() {
 
 function reenviarAMiWhatsApp() {
   if (!props.contrato || !currentUser.value?.telefono) return;
-  const url = getWhatsAppEntregaVideosUrl(props.contrato, currentUser.value.telefono);
+  const url = getWhatsAppEntregaVideosUrlElegirDestino(props.contrato);
   if (url) window.open(url, '_blank', 'noopener,noreferrer');
 }
 </script>

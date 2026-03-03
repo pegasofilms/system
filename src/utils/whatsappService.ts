@@ -111,24 +111,18 @@ function formatPhoneForWhatsApp(telefono: string): string {
   return digits || '';
 }
 
-/**
- * Genera el enlace de WhatsApp para enviar la entrega de videos.
- * Si se pasa numeroDestino (ej. teléfono del usuario logueado), se usa ese número; si no, el del contrato (cliente).
- */
-export function getWhatsAppEntregaVideosUrl(
-  contrato: {
-    contratante?: string | null;
-    telefono?: string | null;
-    tipo_evento?: string;
-    enlaces_videos?: string | null;
-  },
-  numeroDestino?: string | null
-): string | null {
-  const telefono = formatPhoneForWhatsApp(
-    numeroDestino != null && numeroDestino !== '' ? numeroDestino : (contrato.telefono || '')
-  );
-  if (!telefono) return null;
+/** Tipo mínimo del contrato para mensaje de entrega de videos. */
+type ContratoEntregaVideos = {
+  contratante?: string | null;
+  telefono?: string | null;
+  tipo_evento?: string;
+  enlaces_videos?: string | null;
+};
 
+/**
+ * Construye el texto del mensaje de entrega de videos. Devuelve null si no hay enlaces.
+ */
+function buildMensajeEntregaVideos(contrato: ContratoEntregaVideos): string | null {
   const videos = parseVideosEnlaces(contrato.enlaces_videos || '');
   if (videos.length === 0) return null;
 
@@ -159,5 +153,37 @@ export function getWhatsAppEntregaVideosUrl(
   msg += `🌐 Puedes visitar nuestra *página oficial* para ver más de nuestro trabajo: ${EMPRESA.enlacesPaginaOficial}\n`;
   msg += `💰 También puedes cotizar nuestros servicios en nuestra *página de cotizaciones*: ${EMPRESA.enlacesCotizaciones}\n`;
 
+  return msg;
+}
+
+/**
+ * Genera el enlace de WhatsApp para enviar la entrega de videos.
+ * Si se pasa numeroDestino (ej. teléfono del usuario logueado), se usa ese número; si no, el del contrato (cliente).
+ */
+export function getWhatsAppEntregaVideosUrl(
+  contrato: ContratoEntregaVideos,
+  numeroDestino?: string | null
+): string | null {
+  const telefono = formatPhoneForWhatsApp(
+    numeroDestino != null && numeroDestino !== '' ? numeroDestino : (contrato.telefono || '')
+  );
+  if (!telefono) return null;
+
+  const msg = buildMensajeEntregaVideos(contrato);
+  if (!msg) return null;
+
   return `https://wa.me/${telefono}?text=${encodeURIComponent(msg)}`;
+}
+
+/**
+ * Genera el enlace de WhatsApp para la entrega de videos sin número de destino.
+ * Al abrir el enlace, WhatsApp se abre con el mensaje ya escrito y el usuario puede elegir a quién enviarlo.
+ * Útil cuando quieres enviar el mismo mensaje a otro contacto (ej. un familiar) en lugar del del contrato.
+ */
+export function getWhatsAppEntregaVideosUrlElegirDestino(
+  contrato: ContratoEntregaVideos
+): string | null {
+  const msg = buildMensajeEntregaVideos(contrato);
+  if (!msg) return null;
+  return `https://wa.me/?text=${encodeURIComponent(msg)}`;
 }
