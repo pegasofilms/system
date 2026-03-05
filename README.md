@@ -8,8 +8,8 @@ Sistema de gestión de contratos y eventos para PEGASO FILMS.
 
 1. Crea un archivo `.env.local` en la raíz del proyecto:
 ```env
-VITE_SUPABASE_URL=https://nrqnrfkobcvhuhbexipv.supabase.co
-VITE_SUPABASE_KEY=sb_publishable_XKvkpNi_YwSTT27D56VZgQ_ts-6ncku
+VITE_SUPABASE_URL=https://sdfsdgfvoiuhdfoen.supabase.co
+VITE_SUPABASE_KEY=sb_publissdfsdfsdfsdfsdfddsfgdfg
 ```
 
 ### GitHub Pages (Producción)
@@ -21,10 +21,10 @@ Las variables de entorno se configuran usando **GitHub Secrets**:
 3. Haz clic en **New repository secret**
 4. Agrega los siguientes secrets:
    - **Name:** `VITE_SUPABASE_URL`
-   - **Value:** `https://nrqnrfkobcvhuhbexipv.supabase.co`
+   - **Value:** `https://sadffgdgsoidhiurifuef.supabase.co`
    
    - **Name:** `VITE_SUPABASE_KEY`
-   - **Value:** `sb_publishable_XKvkpNi_YwSTT27D56VZgQ_ts-6ncku`
+   - **Value:** `sb_publishableasdasasdasdkjasfiuhriuheorinv`
 
 5. El workflow de GitHub Actions usará automáticamente estos secrets al hacer el build
 
