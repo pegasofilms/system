@@ -74,15 +74,19 @@
               <div class="video-card-actions">
                 <a :href="watchUrl(video.video_id)" target="_blank" rel="noopener noreferrer" @click.stop
                   class="btn btn-outline-danger" title="Ver en YouTube">
-                  <i class="fa-solid fa-play me-1"></i>Play
+                  <i class="fa-solid fa-play me-1"></i>
                 </a>
                 <a :href="editUrl(video.video_id)" target="_blank" rel="noopener noreferrer" @click.stop
                   class="btn btn-outline-secondary" title="Editar en YouTube Studio">
-                  <i class="fa-solid fa-pen-to-square me-1"></i>Editar
+                  <i class="fa-solid fa-pen-to-square me-1"></i>
                 </a>
                 <a :href="shareWhatsAppUrl(video)" target="_blank" rel="noopener noreferrer" @click.stop
                   class="btn btn-outline-success" title="Compartir por WhatsApp">
-                  <i class="fa-brands fa-whatsapp me-1"></i>Compartir
+                  <i class="fa-brands fa-whatsapp me-1"></i>
+                </a>
+                <a type="button" class="btn btn-outline-secondary" title="Copiar URL del video"
+                  @click.stop.prevent="copyToClipboard(watchUrl(video.video_id))" href="#">
+                  <i class="fa-solid fa-copy me-1"></i>
                 </a>
               </div>
               <span class="video-date mt-auto">{{ formatDate(video.published_at) }}</span>
@@ -118,6 +122,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
 import { fetchVideosByChannel, CHANNEL_NAMES, type ChannelKey, type VideoRow } from '@/services/videosApi';
+import Swal from 'sweetalert2';
 
 const props = withDefaults(
   defineProps<{ channelKey: ChannelKey; refreshTrigger?: number }>(),
@@ -248,6 +253,26 @@ function formatDate(iso: string | null): string {
   const d = new Date(iso);
   if (isNaN(d.getTime())) return '';
   return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+async function copyToClipboard(text: string) {
+  try {
+    if (!navigator.clipboard || !window.isSecureContext) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al copiar la URL',
+        text: 'El navegador no soporta la copia al portapapeles.',
+      });
+      return;
+    }
+    await navigator.clipboard.writeText(text);
+  } catch (err) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error al copiar la URL',
+      text: 'No se pudo copiar la URL al portapapeles.',
+    });
+  }
 }
 
 async function load() {
