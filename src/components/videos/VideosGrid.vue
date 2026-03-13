@@ -78,16 +78,15 @@
                 </a>
                 <a :href="editUrl(video.video_id)" target="_blank" rel="noopener noreferrer" @click.stop
                   class="btn btn-outline-secondary" title="Editar en YouTube Studio">
-                  <i class="fa-solid fa-pen-to-square me-1"></i>Edit
+                  <i class="fa-solid fa-pen-to-square me-1"></i>Editar
                 </a>
                 <a :href="shareWhatsAppUrl(video)" target="_blank" rel="noopener noreferrer" @click.stop
                   class="btn btn-outline-success" title="Compartir por WhatsApp">
-                  <i class="fa-brands fa-whatsapp me-1"></i>Share
+                  <i class="fa-brands fa-whatsapp me-1"></i>Compartir
                 </a>
                 <a type="button" class="btn btn-outline-secondary" title="Copiar URL del video"
                   @click.stop.prevent="copyToClipboard(watchUrl(video.video_id))" href="#">
                   <i class="fa-solid fa-copy me-1"></i>
-                  Copy
                 </a>
               </div>
               <span class="video-date mt-auto">{{ formatDate(video.published_at) }}</span>
