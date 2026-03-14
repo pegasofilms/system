@@ -3,11 +3,13 @@
     <main>
       <RouterView />
     </main>
+    <MobileBottomNav />
   </div>
 </template>
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
+import MobileBottomNav from '@/components/MobileBottomNav.vue';
 </script>
 
 <style scoped></style>

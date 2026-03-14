@@ -7,6 +7,7 @@ import CotizarAdmin from '@/pages/CotizarAdmin.vue';
 import Tutoriales from '@/pages/Tutoriales.vue';
 import Videos from '@/pages/Videos.vue';
 import EditarPerfil from '@/pages/EditarPerfil.vue';
+import Pendientes from '@/pages/Pendientes.vue';
 import { useAuth } from '@/composables/useAuth';
 
 const routes = [
@@ -47,6 +48,12 @@ const routes = [
     path: '/videos',
     name: 'Videos',
     component: Videos
+  },
+  {
+    path: '/pendientes',
+    name: 'Pendientes',
+    component: Pendientes,
+    meta: { requiresAuth: true }
   },
   {
     path: '/editar-perfil',

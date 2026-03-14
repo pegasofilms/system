@@ -45,6 +45,10 @@
             </li>
 
             <li class="nav-item" v-if="currentUser">
+              <router-link to="/pendientes" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-list-check me-1"></i>Pendientes</router-link>
+            </li>
+
+            <li class="nav-item" v-if="currentUser">
               <router-link to="/tutoriales" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-book-open me-1"></i>Tutoriales</router-link>
             </li>
 
