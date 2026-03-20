@@ -69,7 +69,13 @@ function truncate(str: string, max: number): string {
 .pendiente-card {
   border-radius: 0.5rem;
   border: 1px solid rgba(0, 0, 0, 0.08);
+  transition: none;
   cursor: pointer;
+}
+
+.pendiente-card:hover {
+  transform: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
 }
 
 .pendiente-card .btn-link:hover {
