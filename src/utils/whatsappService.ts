@@ -106,8 +106,6 @@ export function getWhatsAppCotizacionUrl(datos: {
  */
 function formatPhoneForWhatsApp(telefono: string): string {
   const digits = (telefono || '').replace(/\D/g, '');
-  if (digits.length === 10) return '52' + digits;
-  if (digits.length === 12 && digits.startsWith('52')) return digits;
   return digits || '';
 }
 
