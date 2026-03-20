@@ -8,10 +8,7 @@
       </div>
       <div class="col-12">
         <label class="form-label">Teléfono</label>
-        <input :value="form.telefono" type="text" class="form-control" :class="{ 'is-invalid': telefonoInvalido }"
-          placeholder="10 dígitos (ej. 9541234567)" inputmode="numeric" pattern="[0-9+]*"
-          @input="onTelefonoInput($event)">
-        <div v-if="telefonoInvalido" class="invalid-feedback">El teléfono debe tener exactamente 10 dígitos.</div>
+        <input v-model="form.telefono" type="text" class="form-control" placeholder="Ej. 9541234567">
       </div>
       <div class="col-md-12">
         <label class="form-label">Festejado</label>
@@ -51,8 +48,6 @@ import type { ContratoFormState } from '@/types/contrato';
 
 defineProps<{
   form: ContratoFormState;
-  telefonoInvalido: boolean;
-  onTelefonoInput: (e: Event) => void;
 }>();
 
 const emit = defineEmits<{

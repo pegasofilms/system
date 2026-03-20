@@ -17,7 +17,7 @@
         <div class="modal-body">
           <form ref="formEl" @submit.prevent="submit">
             <EventoSection :form="form" />
-            <ClienteSection :form="form" :on-telefono-input="onTelefonoInput"
+            <ClienteSection :form="form"
               @agregar-padrino="agregarPadrino" @quitar-padrino="quitarPadrino" />
             <NotasSection :form="form" />
             <CotizacionSection :form="form" />
@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, reactive, computed, onBeforeUnmount } from 'vue';
+import { ref, watch, reactive, onBeforeUnmount } from 'vue';
 import { Modal } from 'bootstrap';
 import { limpiarBackdropModal } from '@/utils/modalCleanup';
 import type { Contrato, ContratoFormPayload, PadrinoEntry, VideoEntry, CotizacionData } from '@/types/contrato';
@@ -122,11 +122,6 @@ const defaultForm = () =>
   });
 
 const form = defaultForm();
-
-function onTelefonoInput(e: Event) {
-  const target = e.target as HTMLInputElement;
-  form.telefono = target.value;
-}
 
 function resetForm() {
   form.tipo_evento = '';
