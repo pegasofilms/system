@@ -18,7 +18,7 @@
           <td>{{ c.lugar || '—' }}</td>
           <td>{{ c.contratante || '—' }}</td>
           <td><span :class="getEstadoBadgeClass(c.estado)">{{ formatEstado(c.estado) }}</span></td>
-          <td @click.stop>
+          <td>
             <ContratosAcciones
               :contrato="c"
               variant="desktop"
