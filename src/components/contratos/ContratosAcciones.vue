@@ -5,9 +5,6 @@
       title="Abre WhatsApp con mensaje de entrega de videos al cliente" @click.stop="enviarWhatsApp">
       <i class="fa-brands fa-whatsapp"></i>
     </button>
-    <button type="button" class="btn btn-sm btn-primary me-1" @click.stop="$emit('ver', contrato)" title="Ver" v-if="variant === 'desktop'"> 
-      <i class="fa-solid fa-eye"></i>
-    </button>
     <button type="button" class="btn btn-sm btn-secondary me-1" @click.stop="$emit('sugerencia', contrato)"
       title="Sugerencia de publicación">
       <i class="fa-solid fa-bullhorn"></i>

@@ -22,6 +22,7 @@
         :error-message="errorMessage"
         @nuevo="openCreate"
         @actualizar="loadPendientes"
+        @ver="openView"
         @toggle="onToggle"
         @editar="openEdit"
         @eliminar="confirmDelete"
@@ -35,6 +36,13 @@
       :saving="saving"
       @cerrar="cerrarForm"
       @submit="onFormSubmit"
+    />
+
+    <PendienteViewModal
+      :show="showModalView"
+      :pendiente="pendienteAVer"
+      @cerrar="cerrarView"
+      @editar="openEdit"
     />
   </div>
 </template>
@@ -55,6 +63,7 @@ import {
 import Navbar from '@/components/Navbar.vue';
 import PendientesTable from '@/components/pendientes/PendientesTable.vue';
 import PendienteFormModal from '@/components/pendientes/PendienteFormModal.vue';
+import PendienteViewModal from '@/components/pendientes/PendienteViewModal.vue';
 import { limpiarBackdropModal } from '@/utils/modalCleanup';
 
 const router = useRouter();
@@ -64,7 +73,9 @@ const pendientes = ref<Pendiente[]>([]);
 const loading = ref(false);
 const errorMessage = ref('');
 const showModalForm = ref(false);
+const showModalView = ref(false);
 const pendienteAEditar = ref<Pendiente | null>(null);
+const pendienteAVer = ref<Pendiente | null>(null);
 const esEdicion = ref(false);
 const saving = ref(false);
 
@@ -84,8 +95,9 @@ onMounted(() => {
 });
 
 onBeforeRouteLeave((_to, _from, next) => {
-  if (showModalForm.value) {
+  if (showModalForm.value || showModalView.value) {
     showModalForm.value = false;
+    showModalView.value = false;
     limpiarBackdropModal();
     next(false);
   } else {
@@ -110,12 +122,19 @@ async function loadPendientes() {
 }
 
 function openCreate() {
+  cerrarView();
   pendienteAEditar.value = null;
   esEdicion.value = false;
   showModalForm.value = true;
 }
 
+function openView(p: Pendiente) {
+  pendienteAVer.value = p;
+  showModalView.value = true;
+}
+
 function openEdit(p: Pendiente) {
+  cerrarView();
   pendienteAEditar.value = p;
   esEdicion.value = true;
   showModalForm.value = true;
@@ -124,6 +143,11 @@ function openEdit(p: Pendiente) {
 function cerrarForm() {
   showModalForm.value = false;
   pendienteAEditar.value = null;
+}
+
+function cerrarView() {
+  showModalView.value = false;
+  pendienteAVer.value = null;
 }
 
 async function onFormSubmit(payload: PendienteFormPayload, isEdit: boolean) {

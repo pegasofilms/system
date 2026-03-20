@@ -12,14 +12,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="p in pendientes" :key="p.id">
+        <tr v-for="p in pendientes" :key="p.id" class="row-clickable" @click="$emit('ver', p)">
           <td class="align-middle">
             <button
               type="button"
               class="btn btn-link p-0 border-0 text-decoration-none"
               :class="p.realizado ? 'text-success' : 'text-secondary'"
               :title="p.realizado ? 'Marcar como no realizado' : 'Marcar como realizado'"
-              @click="$emit('toggle', p)"
+              @click.stop="$emit('toggle', p)"
             >
               <i :class="p.realizado ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'" class="fa-lg"></i>
             </button>
@@ -38,10 +38,10 @@
           </td>
           <td class="align-middle">
             <div class="d-flex justify-content-end gap-1">
-              <button type="button" class="btn btn-sm btn-outline-primary" title="Editar" @click="$emit('editar', p)">
+              <button type="button" class="btn btn-sm btn-outline-primary" title="Editar" @click.stop="$emit('editar', p)">
                 <i class="fa-solid fa-pen"></i>
               </button>
-              <button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar" @click="$emit('eliminar', p)">
+              <button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar" @click.stop="$emit('eliminar', p)">
                 <i class="fa-solid fa-trash"></i>
               </button>
             </div>
@@ -61,6 +61,7 @@ defineProps<{
 }>();
 
 defineEmits<{
+  (e: 'ver', p: Pendiente): void;
   (e: 'toggle', p: Pendiente): void;
   (e: 'editar', p: Pendiente): void;
   (e: 'eliminar', p: Pendiente): void;
@@ -79,5 +80,9 @@ defineEmits<{
 }
 .pendientes-table-desktop .btn-link:hover {
   opacity: 0.8;
+}
+
+.row-clickable {
+  cursor: pointer;
 }
 </style>

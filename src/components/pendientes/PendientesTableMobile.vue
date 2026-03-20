@@ -1,6 +1,6 @@
 <template>
   <div class="pendientes-cards">
-    <div v-for="p in pendientes" :key="p.id" class="card pendiente-card mb-3 shadow-sm">
+    <div v-for="p in pendientes" :key="p.id" class="card pendiente-card mb-3 shadow-sm" @click="$emit('ver', p)">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start gap-2">
           <button
@@ -49,6 +49,7 @@ defineProps<{
 }>();
 
 defineEmits<{
+  (e: 'ver', p: Pendiente): void;
   (e: 'toggle', p: Pendiente): void;
   (e: 'editar', p: Pendiente): void;
   (e: 'eliminar', p: Pendiente): void;
@@ -68,6 +69,7 @@ function truncate(str: string, max: number): string {
 .pendiente-card {
   border-radius: 0.5rem;
   border: 1px solid rgba(0, 0, 0, 0.08);
+  cursor: pointer;
 }
 
 .pendiente-card .btn-link:hover {

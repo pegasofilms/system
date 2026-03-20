@@ -16,10 +16,6 @@
               <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('inicio')"><i class="fa-solid fa-house me-1"></i>Inicio</a>
             </li>
 
-            <li class="nav-item" v-if="currentUser">
-              <router-link to="/editar-perfil" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-user me-1"></i>Editar perfil</router-link>
-            </li>
-            
             <template v-if="!currentUser">
               <li class="nav-item">
                 <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleNavClick('servicios')"><i class="fa-solid fa-gear me-1"></i>Servicios</a>
@@ -55,8 +51,24 @@
             <li class="nav-item" v-if="!currentUser">
               <router-link to="/login" class="nav-link nav-pegaso-link" @click="closeMenu"><i class="fa-solid fa-right-to-bracket me-1"></i>Iniciar sesión</router-link>
             </li>
-            <li class="nav-item" v-else>
-              <a class="nav-link nav-pegaso-link" href="#" @click.prevent="handleLogout"><i class="fa-solid fa-sign-out-alt me-1"></i>Cerrar Sesión</a>
+            <li class="nav-item nav-perfil-dropdown" v-else @mouseleave="handlePerfilMouseLeave">
+              <button
+                type="button"
+                class="nav-link nav-pegaso-link btn btn-link text-decoration-none"
+                @click="togglePerfilMenu"
+                :aria-expanded="perfilMenuOpen"
+              >
+                <i class="fa-solid fa-user me-1"></i>Perfil
+                <i class="fa-solid fa-chevron-down ms-1 small"></i>
+              </button>
+              <div class="perfil-dropdown-menu" :class="{ show: perfilMenuOpen }">
+                <router-link to="/editar-perfil" class="dropdown-item" @click="closeMenu">
+                  <i class="fa-solid fa-user-pen me-1"></i>Editar perfil
+                </router-link>
+                <button type="button" class="dropdown-item" @click.prevent="handleLogout">
+                  <i class="fa-solid fa-sign-out-alt me-1"></i>Cerrar sesión
+                </button>
+              </div>
             </li>
         </ul>
       </div>
@@ -73,14 +85,31 @@ import { EMPRESA } from '@/data/empresa';
 const router = useRouter();
 const { currentUser, clearSession } = useAuth();
 const menuOpen = ref(false);
+const perfilMenuOpen = ref(false);
 const logoPath = `${import.meta.env.BASE_URL}img/logo.png`;
 
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
+  if (!menuOpen.value) perfilMenuOpen.value = false;
 };
 
 const closeMenu = () => {
   menuOpen.value = false;
+  perfilMenuOpen.value = false;
+};
+
+const togglePerfilMenu = () => {
+  perfilMenuOpen.value = !perfilMenuOpen.value;
+};
+
+const closePerfilMenu = () => {
+  perfilMenuOpen.value = false;
+};
+
+const handlePerfilMouseLeave = () => {
+  if (window.innerWidth >= 992) {
+    closePerfilMenu();
+  }
 };
 
 const goToHome = () => {
@@ -139,3 +168,65 @@ function handleLogout() {
   router.push('/');
 }
 </script>
+
+<style scoped>
+.nav-perfil-dropdown {
+  position: relative;
+}
+
+.perfil-dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.25rem);
+  min-width: 190px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  padding: 0.35rem 0;
+  display: none;
+  z-index: 1050;
+}
+
+.perfil-dropdown-menu.show {
+  display: block;
+}
+
+.perfil-dropdown-menu .dropdown-item {
+  width: 100%;
+  display: block;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 0.4rem 0.9rem;
+  color: #212529;
+}
+
+.perfil-dropdown-menu .dropdown-item:hover {
+  background: #f8f9fa;
+}
+
+@media (max-width: 991.98px) {
+  .nav-perfil-dropdown {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .perfil-dropdown-menu {
+    position: static;
+    box-shadow: none;
+    border: 0;
+    margin: 0.2rem 0 0;
+    padding-top: 0;
+    min-width: auto;
+    width: auto;
+    text-align: center;
+  }
+
+  .perfil-dropdown-menu .dropdown-item {
+    text-align: center;
+  }
+}
+</style>

@@ -12,13 +12,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="c in contratos" :key="c.id">
+        <tr v-for="c in contratos" :key="c.id" class="row-clickable" @click="$emit('ver', c)">
           <td>{{ c.tipo_evento }}</td>
           <td>{{ formatDate(c.fecha_evento) }}</td>
           <td>{{ c.lugar || '—' }}</td>
           <td>{{ c.contratante || '—' }}</td>
           <td><span :class="getEstadoBadgeClass(c.estado)">{{ formatEstado(c.estado) }}</span></td>
-          <td>
+          <td @click.stop>
             <ContratosAcciones
               :contrato="c"
               variant="desktop"
@@ -60,5 +60,9 @@ defineEmits<{
 }
 .badge {
   font-size: 0.75rem;
+}
+
+.row-clickable {
+  cursor: pointer;
 }
 </style>

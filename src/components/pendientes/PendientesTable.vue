@@ -57,6 +57,7 @@
         <div class="d-none d-md-block">
           <PendientesTableDesktop
             :pendientes="listaActiva"
+            @ver="$emit('ver', $event)"
             @toggle="$emit('toggle', $event)"
             @editar="$emit('editar', $event)"
             @eliminar="$emit('eliminar', $event)"
@@ -66,6 +67,7 @@
         <div class="d-md-none">
           <PendientesTableMobile
             :pendientes="listaActiva"
+            @ver="$emit('ver', $event)"
             @toggle="$emit('toggle', $event)"
             @editar="$emit('editar', $event)"
             @eliminar="$emit('eliminar', $event)"
@@ -93,6 +95,7 @@ const props = defineProps<{
 defineEmits<{
   (e: 'nuevo'): void;
   (e: 'actualizar'): void;
+  (e: 'ver', p: Pendiente): void;
   (e: 'toggle', p: Pendiente): void;
   (e: 'editar', p: Pendiente): void;
   (e: 'eliminar', p: Pendiente): void;
