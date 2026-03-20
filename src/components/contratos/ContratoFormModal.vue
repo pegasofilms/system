@@ -17,7 +17,7 @@
         <div class="modal-body">
           <form ref="formEl" @submit.prevent="submit">
             <EventoSection :form="form" />
-            <ClienteSection :form="form" :telefono-invalido="telefonoInvalido" :on-telefono-input="onTelefonoInput"
+            <ClienteSection :form="form" :on-telefono-input="onTelefonoInput"
               @agregar-padrino="agregarPadrino" @quitar-padrino="quitarPadrino" />
             <NotasSection :form="form" />
             <CotizacionSection :form="form" />
@@ -26,7 +26,7 @@
 
             <div class="contrato-form-footer-actions">
               <button type="button" class="btn btn-outline-secondary" @click="cerrar">Cancelar</button>
-              <button type="submit" class="btn btn-primary" :disabled="(props.saving ?? false) || telefonoInvalido">
+              <button type="submit" class="btn btn-primary" :disabled="(props.saving ?? false)">
                 {{ (props.saving ?? false) ? 'Guardando...' : (esEdicion ? 'Guardar cambios' : 'Crear contrato') }}
               </button>
             </div>
@@ -86,11 +86,6 @@ const emit = defineEmits<{
 
 const modalEl = ref<HTMLElement | null>(null);
 
-function normalizarTelefono(val: string): string {
-  const soloNumeros = (val || '').replace(/\D/g, '');
-  return soloNumeros.slice(0, 10);
-}
-
 const defaultForm = () =>
   reactive({
     tipo_evento: '',
@@ -128,15 +123,9 @@ const defaultForm = () =>
 
 const form = defaultForm();
 
-const telefonoInvalido = computed(() => {
-  const t = (form.telefono || '').replace(/\D/g, '');
-  if (t.length === 0) return false;
-  return t.length !== 10;
-});
-
 function onTelefonoInput(e: Event) {
   const target = e.target as HTMLInputElement;
-  form.telefono = normalizarTelefono(target.value);
+  form.telefono = target.value;
 }
 
 function resetForm() {
@@ -175,7 +164,7 @@ function loadContrato(c: Contrato) {
   form.hora_evento = c.hora_evento ? (c.hora_evento + '').slice(0, 5) : '';
   form.lugar = c.lugar || '';
   form.contratante = c.contratante || '';
-  form.telefono = normalizarTelefono(c.telefono || '');
+  form.telefono = c.telefono || '';
   form.paquete = c.paquete || '';
   form.precio = c.precio != null ? Number(c.precio) : null;
   form.anticipo = c.anticipo != null ? Number(c.anticipo) : null;
@@ -206,7 +195,7 @@ function loadDatosIniciales(datos: NonNullable<typeof props.datosIniciales>) {
   if (datos.tipo_evento) form.tipo_evento = datos.tipo_evento;
   if (datos.lugar) form.lugar = datos.lugar;
   if (datos.paquete) form.paquete = datos.paquete;
-  if (datos.telefono) form.telefono = normalizarTelefono(datos.telefono);
+  if (datos.telefono) form.telefono = datos.telefono;
   if (datos.precio != null) form.precio = datos.precio;
   
   // Mapear datos de cotización
@@ -280,7 +269,6 @@ function cerrar() {
 }
 
 function submit() {
-  if (telefonoInvalido.value) return;
   const payload: ContratoFormPayload & { id?: number } = {
     tipo_evento: form.tipo_evento,
     fecha_evento: form.fecha_evento,
