@@ -8,8 +8,8 @@
       </div>
       <div class="col-12">
         <label class="form-label">Teléfono</label>
-        <input :value="form.telefono" type="tel" class="form-control" :class="{ 'is-invalid': telefonoInvalido }"
-          placeholder="10 dígitos (ej. 9541234567)" maxlength="10" inputmode="numeric" pattern="[0-9]*"
+        <input :value="form.telefono" type="text" class="form-control" :class="{ 'is-invalid': telefonoInvalido }"
+          placeholder="10 dígitos (ej. 9541234567)" inputmode="numeric" pattern="[0-9+]*"
           @input="onTelefonoInput($event)">
         <div v-if="telefonoInvalido" class="invalid-feedback">El teléfono debe tener exactamente 10 dígitos.</div>
       </div>
