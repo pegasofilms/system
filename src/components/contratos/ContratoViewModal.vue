@@ -135,7 +135,7 @@
             <p v-else class="text-muted small mb-0">Sin videos registrados</p>
           </section>
 
-          <section class="contrato-view-section" v-if="contrato.descripcion || contrato.notas">
+          <section class="contrato-view-section">
             <h6 class="contrato-view-section-title">
               <i class="fa-solid fa-note-sticky me-2"></i>Enviar video a whatsapp
             </h6>
