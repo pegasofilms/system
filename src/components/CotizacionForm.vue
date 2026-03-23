@@ -37,6 +37,14 @@
                   </select>
                 </div>
 
+                <div v-if="mostrarAgenciasNopala" class="mb-3">
+                  <label for="agencia_nopala" class="form-label fw-semibold">Agencia de Santos Reyes Nopala</label>
+                  <select class="form-select" id="agencia_nopala" v-model="formData.agencia_nopala">
+                    <option value="">Selecciona una agencia si aplica</option>
+                    <option v-for="a in AGENCIAS_SANTOS_REYES_NOPALA" :key="a" :value="a">{{ a }}</option>
+                  </select>
+                </div>
+
                 <!-- Videoclip / Videos comerciales: solo municipio (precio fijo $3000 + viático) -->
                 <template v-if="formData.tipo_evento === VIDEOCLIP || formData.tipo_evento === VIDEOS_COMERCIALES">
                   <p class="small text-muted">{{ formData.tipo_evento }}: $3,000 MXN + viático según municipio.</p>
@@ -158,9 +166,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted, watch } from 'vue';
 import Swal from 'sweetalert2';
-import { getMunicipiosOaxaca } from '@/data/municipiosOaxaca';
+import { getMunicipiosOaxaca, AGENCIAS_SANTOS_REYES_NOPALA } from '@/data/municipiosOaxaca';
 import { TIPOS_EVENTO, SERVICIOS_OTRO } from '@/data/tiposEvento';
 import { PAQUETES, PAQUETE_SOLO_TRANSMISION, PAQUETE_SOLO_GRABACION, PAQUETE_AMBOS, PAQUETE_DESCRIPCIONES, TEXTO_DIAS_GRABACION } from '@/data/paquetes';
 import { OTRO_SERVICIO, VIDEOCLIP, VIDEOS_COMERCIALES } from '@/data/tiposEvento';
@@ -176,6 +184,7 @@ const router = useRouter();
 const formData = reactive({
   tipo_evento: '',
   lugar: '',
+  agencia_nopala: '',
   paquete: '',
   horas_grabacion: '',
   horas_envivo: '',
@@ -189,6 +198,8 @@ const municipios = ref<string[]>([]);
 const loadingMunicipios = ref(true);
 const loading = ref(false);
 const errorMessage = ref('');
+
+const mostrarAgenciasNopala = computed(() => formData.tipo_evento !== OTRO_SERVICIO && formData.lugar === 'Santos Reyes Nopala');
 
 /** Muestra el campo "días" cuando grabación o transmisión en vivo es más de 4 horas. */
 const mostrarDiasGrabacion = computed(() => {
@@ -217,6 +228,15 @@ onMounted(async () => {
     loadingMunicipios.value = false;
   }
 });
+
+watch(
+  () => formData.lugar,
+  (nuevoLugar) => {
+    if (nuevoLugar !== 'Santos Reyes Nopala') {
+      formData.agencia_nopala = '';
+    }
+  }
+);
 
 const handleSubmit = () => {
   errorMessage.value = '';
@@ -351,6 +371,7 @@ function crearContratoDesdeCotizacion(precioTotal: number) {
   
   if (formData.tipo_evento) params.set('tipo_evento', formData.tipo_evento);
   if (formData.lugar) params.set('lugar', formData.lugar);
+  if (formData.agencia_nopala) params.set('agencia_nopala', formData.agencia_nopala);
   if (formData.paquete) params.set('paquete', formData.paquete);
   if (formData.horas_grabacion) params.set('horas_grabacion', formData.horas_grabacion);
   if (formData.horas_envivo) params.set('horas_envivo', formData.horas_envivo);

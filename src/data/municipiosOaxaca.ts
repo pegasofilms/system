@@ -18,6 +18,40 @@ const MUNICIPIOS_OAXACA = [
   'Villa de Tututepec de Melchor Ocampo',
 ];
 
+/**
+ * Agencias de Santos Reyes Nopala.
+ * Si se selecciona alguna en cotización, aplica viático especial.
+ */
+export const AGENCIAS_SANTOS_REYES_NOPALA = [
+  "Arroyo Seco",
+  "Cañada de los Matus",
+  "Cañada las Flores",
+  "Cerro Cuero",
+  "Cerro de Aire",
+  "Cerro Iglesia",
+  "Cerro Niño",
+  "Ciénega Grande",
+  "El Aguacatal",
+  "El Armadillo (San José Armadillo)",
+  "El Cangrejo",
+  "El Murciélago",
+  "El Paraíso",
+  "El Portillo",
+  "El Salitre",
+  "El Zacatal",
+  "El Zanate",
+  "La Matraca",
+  "Pueblo Viejo",
+  "San Antonio Cuixtla",
+  "San José Atotonilco",
+  "San Lucía Teotepec",
+  "Santa Lucía Teotepec",
+  "Santa María Coixtepec",
+  "Santa María Magdalena Tiltepec",
+  "Santiago Cuixtla",
+  "Otro",
+] as const;
+
 export const MUNICIPIOS_OAXACA_URL =
   'https://gaia.inegi.org.mx/wscatgeo/v2/mgee/20';
 

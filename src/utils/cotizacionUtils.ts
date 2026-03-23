@@ -11,6 +11,7 @@ import { BAILE, JARIPEO, OTRO_SERVICIO, SERVICIOS_OTRO, VIDEOCLIP, VIDEOS_COMERC
 export interface DatosCotizacion {
   tipo_evento: string;
   lugar: string;
+  agencia_nopala?: string;
   paquete: string;
   horas_grabacion: string;
   horas_envivo: string;
@@ -56,11 +57,12 @@ export const RECARGO_POR_DIA_GRABACION = 200;
 
 /**
  * Viáticos por municipio (Oaxaca).
- * Reglas: Santos Reyes Nopala $200; lista especial $300; "Otro" $1500; demás $800.
+ * Reglas: Santos Reyes Nopala con agencia seleccionada $200, sin agencia $0;
+ * lista especial $300; "Otro" $1500; demás $800.
  */
-export function getViatico(lugar: string): number {
+export function getViatico(lugar: string, agenciaNopala?: string): number {
   if (!lugar) return 0;
-  if (lugar === 'Santos Reyes Nopala') return VIATICO_NOPALA;
+  if (lugar === 'Santos Reyes Nopala') return agenciaNopala ? VIATICO_NOPALA : 0;
   if (lugar === 'Otro') return VIATICO_OTRO;
   if (MUNICIPIOS_VIATICO_300.includes(lugar as (typeof MUNICIPIOS_VIATICO_300)[number])) return 300;
   return VIATICO_DEFAULT;
@@ -137,7 +139,7 @@ export function calcularPrecioEstimado(datos: DatosCotizacion): ResultadoCotizac
   const desglose: string[] = [];
   let total = 0;
   const tipo = (datos.tipo_evento || '').trim();
-  const viatico = getViatico(datos.lugar || '');
+  const viatico = getViatico(datos.lugar || '', (datos.agencia_nopala || '').trim());
 
   if (tipo === VIDEOCLIP || tipo === VIDEOS_COMERCIALES) {
     total = PRECIO_VIDEOCLIP_COMERCIALES + viatico;
@@ -210,7 +212,7 @@ export function calcularPrecioEstimado(datos: DatosCotizacion): ResultadoCotizac
   }
 
   if (viatico > 0) {
-    desglose.push(`Viático (${datos.lugar}): $${viatico.toLocaleString('es-MX')}`);
+    desglose.push(`Viático : $${viatico.toLocaleString('es-MX')}`);
     total += viatico;
   }
 
