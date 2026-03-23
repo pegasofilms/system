@@ -77,19 +77,28 @@ export const PRECIOS_OTRO: Record<string, number> = Object.fromEntries(
 );
 
 /** Grabación: 1h fijo; 2h y 3h $/h; 4–5h, 6–7h, 8+h mismas escalas que en vivo. */
-export const TARIFA_GRABACION_1H = 1000;
-export const TARIFA_GRABACION_2H = 700;
+export const TARIFA_GRABACION_1H = 700;
+export const TARIFA_GRABACION_2H = 600;
 export const TARIFA_GRABACION_3H = 600;
 export const TARIFA_GRABACION_4_5H = 500;
 export const TARIFA_GRABACION_6_7H = 400;
-export const TARIFA_GRABACION_8_MAS = 350;
+export const TARIFA_GRABACION_8_MAS = 400;
 
-/** En vivo: 1h total fijo; 2h y 3h $/h; 4+h escalas. */
-export const TARIFA_EN_VIVO_1H = 800;
-export const TARIFA_EN_VIVO_2H_3H_POR_HORA = 600;
-export const TARIFA_EN_VIVO_4_5H = 500;
-export const TARIFA_EN_VIVO_6_7H = 400;
-export const TARIFA_EN_VIVO_8_MAS = 350;
+/** En vivo (solo transmisión): 1h=700, 2h=550, 3h=500, 4h=400, 5h=350, 6h+=300. */
+export const TARIFA_EN_VIVO_SOLO_1H = 700;
+export const TARIFA_EN_VIVO_SOLO_2H = 550;
+export const TARIFA_EN_VIVO_SOLO_3H = 500;
+export const TARIFA_EN_VIVO_SOLO_4H = 400;
+export const TARIFA_EN_VIVO_SOLO_5H = 350;
+export const TARIFA_EN_VIVO_SOLO_6_MAS = 300;
+
+/** En vivo (paquete ambos): 1h=500, 2h=500, 3h=400, 4h=400, 5h=300, 6h+=300. */
+export const TARIFA_EN_VIVO_AMBOS_1H = 500;
+export const TARIFA_EN_VIVO_AMBOS_2H = 500;
+export const TARIFA_EN_VIVO_AMBOS_3H = 400;
+export const TARIFA_EN_VIVO_AMBOS_4H = 400;
+export const TARIFA_EN_VIVO_AMBOS_5H = 300;
+export const TARIFA_EN_VIVO_AMBOS_6_MAS = 300;
 
 function getPrecioGrabacion(horas: number): { subtotal: number; precioHora: number } {
   if (horas === 1) return { subtotal: TARIFA_GRABACION_1H, precioHora: TARIFA_GRABACION_1H };
@@ -100,20 +109,29 @@ function getPrecioGrabacion(horas: number): { subtotal: number; precioHora: numb
   return { subtotal: TARIFA_GRABACION_4_5H * horas, precioHora: TARIFA_GRABACION_4_5H };
 }
 
-function getPrecioEnVivo(horas: number): { subtotal: number; precioHora: number } {
-  if (horas === 1) return { subtotal: TARIFA_EN_VIVO_1H, precioHora: TARIFA_EN_VIVO_1H };
-  if (horas === 2) return { subtotal: TARIFA_EN_VIVO_2H_3H_POR_HORA * horas, precioHora: TARIFA_EN_VIVO_2H_3H_POR_HORA };
-  if (horas === 3) return { subtotal: TARIFA_EN_VIVO_2H_3H_POR_HORA * horas, precioHora: TARIFA_EN_VIVO_2H_3H_POR_HORA };
-  if (horas >= 8) return { subtotal: TARIFA_EN_VIVO_8_MAS * horas, precioHora: TARIFA_EN_VIVO_8_MAS };
-  if (horas >= 6) return { subtotal: TARIFA_EN_VIVO_6_7H * horas, precioHora: TARIFA_EN_VIVO_6_7H };
-  return { subtotal: TARIFA_EN_VIVO_4_5H * horas, precioHora: TARIFA_EN_VIVO_4_5H };
+function getPrecioEnVivo(horas: number, paquete: string): { subtotal: number; precioHora: number } {
+  const esSoloTransmision = paquete === PAQUETE_SOLO_TRANSMISION;
+  const tarifa1h = esSoloTransmision ? TARIFA_EN_VIVO_SOLO_1H : TARIFA_EN_VIVO_AMBOS_1H;
+  const tarifa2h = esSoloTransmision ? TARIFA_EN_VIVO_SOLO_2H : TARIFA_EN_VIVO_AMBOS_2H;
+  const tarifa3h = esSoloTransmision ? TARIFA_EN_VIVO_SOLO_3H : TARIFA_EN_VIVO_AMBOS_3H;
+  const tarifa4h = esSoloTransmision ? TARIFA_EN_VIVO_SOLO_4H : TARIFA_EN_VIVO_AMBOS_4H;
+  const tarifa5h = esSoloTransmision ? TARIFA_EN_VIVO_SOLO_5H : TARIFA_EN_VIVO_AMBOS_5H;
+  const tarifa6Mas = esSoloTransmision ? TARIFA_EN_VIVO_SOLO_6_MAS : TARIFA_EN_VIVO_AMBOS_6_MAS;
+
+  if (horas === 1) return { subtotal: tarifa1h, precioHora: tarifa1h };
+  if (horas === 2) return { subtotal: tarifa2h * 2, precioHora: tarifa2h };
+  if (horas === 3) return { subtotal: tarifa3h * 3, precioHora: tarifa3h };
+  if (horas === 4) return { subtotal: tarifa4h * 4, precioHora: tarifa4h };
+  if (horas === 5) return { subtotal: tarifa5h * 5, precioHora: tarifa5h };
+  return { subtotal: tarifa6Mas * horas, precioHora: tarifa6Mas };
 }
 
 /**
  * Calcula el precio estimado a partir de los datos del formulario.
  * Reglas: Videoclip/Videos comerciales $3000+viático; Otro = PRECIOS_OTRO;
- * Grabación: 1h=$1000, 2h=$700/h, 3h=$600/h, 4–5h=$500/h, 6–7h=$400/h, 8+h=$350/h; Baile/Jaripeo +$100/h (implícito).
- * En vivo: 1h=$800, 2–3h=$600/h, 4–5h=$500/h, 6–7h=$400/h, 8+h=$350/h.
+ * Grabación: 1h=$700, 2–3h=$600/h, 4–5h=$500/h, 6+h=$400/h; Baile/Jaripeo +$100/h (implícito).
+ * En vivo solo transmisión: 1h=$700, 2h=$550/h, 3h=$500/h, 4h=$400/h, 5h=$350/h, 6+h=$300/h.
+ * En vivo en paquete ambos: 1–2h=$500/h, 3–4h=$400/h, 5+h=$300/h.
  */
 export function calcularPrecioEstimado(datos: DatosCotizacion): ResultadoCotizacion {
   const desglose: string[] = [];
@@ -176,7 +194,7 @@ export function calcularPrecioEstimado(datos: DatosCotizacion): ResultadoCotizac
   if ((paquete === PAQUETE_SOLO_TRANSMISION || paquete === PAQUETE_AMBOS) && hEnvivo && hEnvivo !== '0') {
     const horas = hEnvivo === 'mas' ? 12 : parseInt(hEnvivo, 10);
     if (horas > 4) algunoMasDe4Horas = true;
-    const { subtotal, precioHora } = getPrecioEnVivo(horas);
+    const { subtotal, precioHora } = getPrecioEnVivo(horas, paquete);
     desglose.push(`En vivo ($${precioHora.toLocaleString('es-MX')}/h) − ${horas}h = $${subtotal.toLocaleString('es-MX')}`);
     total += subtotal;
   }
