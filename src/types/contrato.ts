@@ -51,6 +51,8 @@ export interface Contrato {
 /** Estado reactivo del formulario de contrato (para secciones del ContratoFormModal) */
 export interface ContratoFormState {
   tipo_evento: string;
+  /** Cuando el tipo de evento no está en el catálogo o se elige "Otro..." */
+  tipo_evento_otro: string;
   fecha_evento: string;
   hora_evento: string;
   lugar: string;

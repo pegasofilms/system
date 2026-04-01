@@ -89,6 +89,7 @@ const modalEl = ref<HTMLElement | null>(null);
 const defaultForm = () =>
   reactive({
     tipo_evento: '',
+    tipo_evento_otro: '',
     fecha_evento: '',
     hora_evento: '',
     lugar: '',
@@ -125,6 +126,7 @@ const form = defaultForm();
 
 function resetForm() {
   form.tipo_evento = '';
+  form.tipo_evento_otro = '';
   form.fecha_evento = '';
   form.hora_evento = '';
   form.lugar = '';
@@ -155,6 +157,7 @@ function resetForm() {
 
 function loadContrato(c: Contrato) {
   form.tipo_evento = c.tipo_evento;
+  form.tipo_evento_otro = '';
   form.fecha_evento = (c.fecha_evento || '').toString().slice(0, 10);
   form.hora_evento = c.hora_evento ? (c.hora_evento + '').slice(0, 5) : '';
   form.lugar = c.lugar || '';
@@ -264,8 +267,20 @@ function cerrar() {
 }
 
 function submit() {
+  const tipoEventoFinal = (() => {
+    const seleccionado = (form.tipo_evento || '').trim();
+    const otro = (form.tipo_evento_otro || '').trim();
+    // Si el select está vacío pero hay "otro" (caso editar/leer valor no catalogado), guardamos "otro".
+    if (!seleccionado && otro) return otro;
+    // Si el usuario eligió una opción "Otro..." debe capturar el valor en el input.
+    if (seleccionado === 'Otro tipo de evento' || seleccionado === 'Otro servicio') {
+      return otro || seleccionado;
+    }
+    return seleccionado;
+  })();
+
   const payload: ContratoFormPayload & { id?: number } = {
-    tipo_evento: form.tipo_evento,
+    tipo_evento: tipoEventoFinal,
     fecha_evento: form.fecha_evento,
     hora_evento: form.hora_evento || null,
     lugar: form.lugar || null,

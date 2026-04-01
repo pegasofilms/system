@@ -18,16 +18,28 @@
         </button>
       </div>
     </div>
-    <div v-if="form.videosLista.length" class="d-flex flex-wrap gap-2">
-      <span v-for="(v, idx) in form.videosLista" :key="idx"
-        class="badge bg-light text-dark border border-secondary d-inline-flex align-items-center gap-1 py-2">
-        <span class="fw-semibold">{{ v.nombre || 'Sin nombre' }}</span>
-        <span class="text-muted">·</span>
-        <a :href="v.url" target="_blank" rel="noopener" class="text-dark text-decoration-none text-truncate"
-          style="max-width: 180px;">{{ v.url }}</a>
-        <button type="button" class="btn-close btn-close-sm p-0 ms-1" style="font-size: 0.6rem;"
-          @click="quitarVideo(idx)" aria-label="Quitar"></button>
-      </span>
+    <div v-if="form.videosLista.length">
+      <div v-for="(v, idx) in form.videosLista" :key="idx"
+        class="video-row mb-2 d-flex flex-wrap gap-2 align-items-end">
+        <div class="flex-grow-1" style="min-width: 140px;">
+          <label class="form-label small mb-0">Nombre del video</label>
+          <input v-model="v.nombre" type="text" class="form-control form-control-sm"
+            placeholder="Ej. intro, comida, baile">
+        </div>
+        <div class="flex-grow-1" style="min-width: 200px;">
+          <label class="form-label small mb-0">URL</label>
+          <input v-model="v.url" type="url" class="form-control form-control-sm" placeholder="https://...">
+        </div>
+        <div class="d-flex gap-2">
+          <a v-if="v.url.trim()" :href="v.url" target="_blank" rel="noopener" class="btn btn-outline-secondary btn-sm"
+            title="Abrir">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+          <button type="button" class="btn btn-outline-danger btn-sm" title="Quitar" @click="quitarVideo(idx)">
+            <i class="fa-solid fa-minus"></i>
+          </button>
+        </div>
+      </div>
     </div>
   </section>
 </template>
