@@ -7,6 +7,7 @@
 <script setup lang="ts">
 import Navbar from '@/components/Navbar.vue';
 import CotizacionForm from '@/components/CotizacionForm.vue';
+import ContactoFooter from '@/components/sections/ContactoFooter.vue';
 </script>
 
 <style scoped>

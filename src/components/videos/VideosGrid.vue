@@ -135,12 +135,12 @@ const error = ref<string | null>(null);
 
 const now = new Date();
 const currentYear = String(now.getFullYear());
-const currentMonth = String(now.getMonth() + 1);
 
 const searchQuery = ref('');
 const showAll = ref(false);
 const selectedYear = ref(currentYear);
-const selectedMonth = ref(currentMonth);
+// Por defecto: "Todos" (sin filtrar por mes)
+const selectedMonth = ref('');
 const order = ref<'desc' | 'asc'>('desc');
 
 const selectedIds = ref<string[]>([]);
@@ -292,7 +292,8 @@ async function load() {
   searchQuery.value = '';
   showAll.value = false;
   selectedYear.value = String(n.getFullYear());
-  selectedMonth.value = String(n.getMonth() + 1);
+  // Por defecto: "Todos" (sin filtrar por mes)
+  selectedMonth.value = '';
   order.value = 'desc';
   selectedIds.value = [];
 }
